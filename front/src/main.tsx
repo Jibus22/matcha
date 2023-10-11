@@ -5,8 +5,9 @@ import Root from "./routes/root.tsx";
 import Index from "./routes/index.tsx";
 import RootErrorPage from "./errorPages/root-error-page.tsx";
 import ChildrenErrorPage from "./errorPages/children-error-page.tsx";
-import Login from "./routes/login.tsx";
 import Signup from "./routes/signup.tsx";
+import PasswordReset from "./routes/password-reset.tsx";
+import Signin from "./routes/signin.tsx";
 
 const router = createBrowserRouter([
   {
@@ -22,12 +23,16 @@ const router = createBrowserRouter([
             element: <Index />,
           },
           {
-            path: "/login",
-            element: <Login />,
+            path: "/signin",
+            element: <Signin />,
           },
           {
             path: "/signup",
             element: <Signup />,
+          },
+          {
+            path: "/passwordreset",
+            element: <PasswordReset />,
           },
         ],
       },

@@ -2,9 +2,17 @@ import { Link } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 
 const Body = styled.div`
-  padding: 1em 5em;
+  padding: calc(0.1em + 8vh) 5em;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 1fr;
+  @media (max-width: 940px) {
+    padding: calc(0.1em + 7vh) 0.2em;
+  }
+  @media (max-width: 700px) {
+    padding: calc(0.1em + 2vh) 0.2em;
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 const Section = styled.section`
@@ -14,8 +22,6 @@ const Section = styled.section`
 
 const ImageContainer = styled.div`
   width: 100%;
-  position: absolute;
-  top: 30%;
 
   img {
     object-fit: contain;
@@ -28,10 +34,16 @@ const ImageContainer = styled.div`
 const HomePrez = styled.div`
   max-width: 700px;
   width: 100%;
-  padding-top: 8em;
-  padding-left: 2em;
-  padding-bottom: 3em;
-  margin-bottom: 2em;
+  padding-top: 4em;
+  padding-bottom: 2em;
+  padding-left: 5em;
+  margin: 0 auto;
+  p {
+    padding: 1em 2em;
+  }
+  @media (max-width: 700px) {
+    padding-left: 0em;
+  }
 `;
 
 const glitch = keyframes`
