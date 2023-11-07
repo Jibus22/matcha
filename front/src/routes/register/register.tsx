@@ -11,7 +11,7 @@ export async function loader() {
 
 export async function action() {
   // Lancer une requete "/api/signout"
-  return redirect("/signin");
+  return redirect("/auth/signin");
 }
 
 export default function Register() {

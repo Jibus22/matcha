@@ -139,7 +139,7 @@ export default function Index() {
             <b>― Erma Bombeck</b>
           </p>
         </HomePrez>
-        <ButtonLink to="/signup">start&nbsp;shopping</ButtonLink>
+        <ButtonLink to="/auth/signup">start&nbsp;shopping</ButtonLink>
       </Section>
       <Section>
         <ImageContainer>

@@ -32,7 +32,7 @@ export async function action({ request }: ActionFunctionArgs) {
   // const ret = fetch(POST, "/api/signup", {inputs});
   // if (ret.err) return ret.err;
 
-  return redirect("/signin");
+  return redirect("/auth/signin");
 }
 
 export default function Signup() {

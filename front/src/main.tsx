@@ -1,30 +1,30 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Root, { loader as rootLoader } from "./routes/root/root.tsx";
+import Auth, { loader as rootLoader } from "./routes/auth/auth.tsx";
 import RootErrorPage from "./errorPages/root-error-page.tsx";
 import ChildrenErrorPage from "./errorPages/children-error-page.tsx";
 import Signup, {
   loader as signupLoader,
   action as signupAction,
-} from "./routes/root/signup.tsx";
+} from "./routes/auth/signup.tsx";
 import Signin, {
   loader as signinLoader,
   action as signinAction,
-} from "./routes/root/signin.tsx";
+} from "./routes/auth/signin.tsx";
 import PasswordReset, {
   loader as passwordResetLoader,
   action as passwordResetAction,
-} from "./routes/root/password-reset.tsx";
+} from "./routes/auth/password-reset.tsx";
 import Register, {
   loader as registerLoader,
   action as registerAction,
 } from "./routes/register/register.tsx";
-import App, {
+import Root, {
   loader as appLoader,
   action as appAction,
-} from "./routes/app/app.tsx";
-import Index from "./routes/root/index.tsx";
+} from "./routes/root/root.tsx";
+import Index from "./routes/auth/index.tsx";
 import Gender, { action as genderAction } from "./routes/register/gender.tsx";
 import Preferences, {
   action as preferencesAction,
@@ -41,8 +41,8 @@ import Pictures, {
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Root />,
+    path: "/auth",
+    element: <Auth />,
     loader: rootLoader,
     errorElement: <RootErrorPage />,
     children: [
@@ -115,8 +115,8 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/app",
-    element: <App />,
+    path: "/",
+    element: <Root />,
     errorElement: <RootErrorPage />,
     loader: appLoader,
     action: appAction,

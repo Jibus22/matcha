@@ -37,7 +37,7 @@ export async function action({ request }: ActionFunctionArgs) {
   // const ret = fetch(POST, "/api/signin", {inputs});
   // if (ret.err) return ret.err;
 
-  //TODO: rediriger vers "/app" si profile complet, sinon "/register"
+  //TODO: rediriger vers "/" si profile complet, sinon "/register"
   return redirect("/register");
 }
 
@@ -75,8 +75,8 @@ export default function Signin() {
           <Button type="submit">Sign In</Button>
         </CustomForm>
         <Help>
-          <ButtonLink to="/passwordreset">Forgot password ?</ButtonLink>
-          <ButtonLink to="/signup">No user account ? Sign up</ButtonLink>
+          <ButtonLink to="/auth/passwordreset">Forgot password ?</ButtonLink>
+          <ButtonLink to="/auth/signup">No user account ? Sign up</ButtonLink>
         </Help>
       </Body>
     </>

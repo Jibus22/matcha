@@ -1,10 +1,16 @@
-import { Link, Outlet } from "react-router-dom";
+import { Form, Link, Outlet, redirect } from "react-router-dom";
 import { GlobalStyle } from "../../style/global-style";
 import { Header, PageContent } from "../styles";
 
 export async function loader() {
-  // Si je suis log, rediriger vers "/app"
+  // Si je ne suis pas log, rediriger vers "/signin"
+  // Si le remplissage du profile n'est pas terminé, renvoyer vers "/register"
   return null;
+}
+
+export async function action() {
+  // Lancer une requete "/api/signout"
+  return redirect("/auth/signin");
 }
 
 export default function Root() {
@@ -13,7 +19,9 @@ export default function Root() {
       <GlobalStyle />
       <Header>
         <Link to="/">Home</Link>
-        <Link to="/signin">Sign In</Link>
+        <Form method="post">
+          <button type="submit">Sign Out</button>
+        </Form>
       </Header>
       <PageContent>
         <Outlet />
