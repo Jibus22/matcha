@@ -40,6 +40,11 @@ const HomePrez = styled.div`
   margin: 0 auto;
   p {
     padding: 1em 2em;
+    q {
+      quotes: "«" "»" '"' '"';
+      font-weight: 500;
+      font-size: calc(1rem + 0.1vw);
+    }
   }
   @media (max-width: 700px) {
     padding-left: 0em;
@@ -126,8 +131,12 @@ export default function Index() {
           </GlitchWrapper>
           <p>
             At Matcha, our products are fresh and high quality. You can consume
-            organic and local thanks to the choice we offer. Be careful, you can
-            also be consumed, we never know. Good tasting
+            organic and local thanks to the choice we offer.<br></br>
+            <q>
+              Seize the moment. Remember all those women on the 'Titanic' who
+              waved off the dessert cart.
+            </q>
+            <b>― Erma Bombeck</b>
           </p>
         </HomePrez>
         <ButtonLink to="/signup">start&nbsp;shopping</ButtonLink>
