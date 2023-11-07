@@ -2,6 +2,7 @@ import { Form, Outlet, redirect } from "react-router-dom";
 import { GlobalStyle } from "../../style/global-style";
 import { Header, PageContent } from "../styles";
 import { apiGetUser } from "../controllers/user";
+import { apiSignout } from "../controllers/auth";
 
 export async function loader() {
   const user = apiGetUser();
@@ -13,7 +14,7 @@ export async function loader() {
 }
 
 export async function action() {
-  // Lancer une requete "/api/signout"
+  apiSignout();
   return redirect("/auth/signin");
 }
 

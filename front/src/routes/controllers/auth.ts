@@ -56,3 +56,11 @@ export const apiSignin = import.meta.env.VITE_STATIC_GH_PAGE
 
       return { registration: "" };
     };
+
+export const apiSignout = import.meta.env.VITE_STATIC_GH_PAGE
+  ? () => {
+      sessionStorage.removeItem("session_id");
+    }
+  : () => {
+      // requete API fetch(POST, "/api/signout", {});
+    };
