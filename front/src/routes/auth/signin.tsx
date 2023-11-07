@@ -7,7 +7,6 @@ import {
 import styled from "styled-components";
 import {
   ISigninFormErrors,
-  ISigninInput,
   isInstanceOfISigninFormErrors,
   isInstanceOfISigninInput,
   signinSanitize,
@@ -20,31 +19,12 @@ import {
   FormError,
   FormStyleInput,
 } from "../styles";
+import { apiSignin } from "../controllers/auth";
 
 const wrongData = {
   username: null,
   password: null,
   err: "wrong data",
-};
-
-const apiSignin = (inputs: ISigninInput) => {
-  // TODO envoyer une requête à l'API qui va sanitize de son côté
-  // const ret = fetch(POST, "/api/signin", {inputs});
-  const err = { username: null, password: null, err: "authentication error" };
-
-  let user = sessionStorage.user;
-  if (!user) {
-    return { err: err };
-  } else {
-    user = JSON.parse(user);
-  }
-  if (inputs.username !== user.username || inputs.password !== user.password)
-    return { err: err };
-
-  // mimic session cookie from server
-  sessionStorage.setItem("session_id", "false_session_id_0123456789");
-  // registration contient le stade d'enregistrement du user (la route)
-  return { registration: user.registration };
 };
 
 export async function loader() {

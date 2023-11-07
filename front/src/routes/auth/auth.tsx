@@ -1,7 +1,7 @@
 import { Link, Outlet, redirect } from "react-router-dom";
 import { GlobalStyle } from "../../style/global-style";
 import { Header, PageContent } from "../styles";
-import { apiGetUser } from "../utils";
+import { apiGetUser } from "../controllers/user";
 
 export async function loader() {
   const user = apiGetUser();

@@ -10,11 +10,11 @@ import {
 import { ActionFunctionArgs, redirect, useActionData } from "react-router-dom";
 import {
   ISignupFormErrors,
-  ISignupInput,
   isInstanceOfISignupFormErrors,
   isInstanceOfISignupInput,
   signupSanitize,
 } from "./utils";
+import { apiSignup } from "../controllers/auth";
 
 const wrongData = {
   email: null,
@@ -23,16 +23,6 @@ const wrongData = {
   password: null,
   username: null,
   err: "wrong data",
-};
-
-const apiSignup = (inputs: ISignupInput) => {
-  // TODO envoyer une requête à l'API qui va sanitize de son côté
-  // const ret = fetch(POST, "/api/signup", {inputs});
-  const user = { registration: "/register/gender", ...inputs };
-
-  sessionStorage.setItem("user", JSON.stringify(user));
-
-  return null;
 };
 
 export async function loader() {

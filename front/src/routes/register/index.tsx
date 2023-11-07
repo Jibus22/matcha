@@ -1,5 +1,5 @@
 import { redirect } from "react-router-dom";
-import { apiGetUser } from "../utils";
+import { apiGetUser } from "../controllers/user";
 
 export async function loader() {
   const user = apiGetUser();
