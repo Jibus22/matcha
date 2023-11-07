@@ -7,7 +7,9 @@ import {
 import styled from "styled-components";
 import {
   ISigninFormErrors,
+  ISigninInput,
   isInstanceOfISigninFormErrors,
+  isInstanceOfISigninInput,
   signinSanitize,
 } from "./utils";
 import {
@@ -19,6 +21,32 @@ import {
   FormStyleInput,
 } from "../styles";
 
+const wrongData = {
+  username: null,
+  password: null,
+  err: "wrong data",
+};
+
+const apiSignin = (inputs: ISigninInput) => {
+  // TODO envoyer une requête à l'API qui va sanitize de son côté
+  // const ret = fetch(POST, "/api/signin", {inputs});
+  const err = { username: null, password: null, err: "authentication error" };
+
+  let user = sessionStorage.user;
+  if (!user) {
+    return { err: err };
+  } else {
+    user = JSON.parse(user);
+  }
+  if (inputs.username !== user.username || inputs.password !== user.password)
+    return { err: err };
+
+  // mimic session cookie from server
+  sessionStorage.setItem("session_id", "false_session_id_0123456789");
+  // registration contient le stade d'enregistrement du user (la route)
+  return { registration: user.registration };
+};
+
 export async function loader() {
   // API check si je suis pas déjà signed in, si oui, rediriger là ou il faut
   return null;
@@ -28,17 +56,18 @@ export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const inputs = Object.fromEntries(formData);
 
+  if (!isInstanceOfISigninInput(inputs)) return wrongData;
+
   const errors = signinSanitize(inputs);
   const err = Object.values(errors).filter((elem) => elem !== null);
 
   if (err.length > 0) return errors;
 
-  // TODO envoyer une requête à l'API qui va sanitize de son côté
-  // const ret = fetch(POST, "/api/signin", {inputs});
-  // if (ret.err) return ret.err;
+  const apiResponse = apiSignin(inputs);
 
-  //TODO: rediriger vers "/" si profile complet, sinon "/register"
-  return redirect("/register");
+  if (apiResponse?.err) return apiResponse?.err;
+
+  return redirect(apiResponse.registration);
 }
 
 export default function Signin() {
@@ -73,6 +102,7 @@ export default function Signin() {
           ></FormStyleInput>
           {errors?.password && <FormError>{errors.password}</FormError>}
           <Button type="submit">Sign In</Button>
+          {errors?.err && <FormError>{errors.err}</FormError>}
         </CustomForm>
         <Help>
           <ButtonLink to="/auth/passwordreset">Forgot password ?</ButtonLink>

@@ -1,11 +1,14 @@
 import { Form, Outlet, redirect } from "react-router-dom";
 import { GlobalStyle } from "../../style/global-style";
 import { Header, PageContent } from "../styles";
+import { apiGetUser } from "../utils";
 
 export async function loader() {
-  // Si je ne suis pas log, rediriger vers "/signin"
-  // Si le remplissage du profile n'est pas terminé, renvoyer vers "/register/XX"
-  // Où 'XX' correspond au stade de remplissage. Sinon renvoyer vers "/app"
+  const user = apiGetUser();
+
+  if (!user) return redirect("/auth");
+
+  // Redirige vers root ou une étape d'enregistrement
   return null;
 }
 

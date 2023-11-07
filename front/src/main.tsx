@@ -25,19 +25,29 @@ import Root, {
   action as appAction,
 } from "./routes/root/root.tsx";
 import Index from "./routes/auth/index.tsx";
-import Gender, { action as genderAction } from "./routes/register/gender.tsx";
+import Gender, {
+  action as genderAction,
+  loader as genderLoader,
+} from "./routes/register/gender.tsx";
 import Preferences, {
   action as preferencesAction,
+  loader as preferencesLoader,
 } from "./routes/register/preferences.tsx";
 import Biography, {
   action as biographyAction,
+  loader as biographyLoader,
 } from "./routes/register/biography.tsx";
 import Interests, {
   action as interestsAction,
+  loader as interestsLoader,
 } from "./routes/register/interests.tsx";
 import Pictures, {
   action as picturesAction,
+  loader as picturesLoader,
 } from "./routes/register/pictures.tsx";
+import RegisterIndex, {
+  loader as indexRegisterLoader,
+} from "./routes/register/index.tsx";
 
 const router = createBrowserRouter([
   {
@@ -86,29 +96,39 @@ const router = createBrowserRouter([
         errorElement: <ChildrenErrorPage />,
         children: [
           {
+            index: true,
+            element: <RegisterIndex />,
+            loader: indexRegisterLoader,
+          },
+          {
             path: "gender",
             element: <Gender />,
             action: genderAction,
+            loader: genderLoader,
           },
           {
             path: "preferences",
             element: <Preferences />,
             action: preferencesAction,
+            loader: preferencesLoader,
           },
           {
             path: "biography",
             element: <Biography />,
             action: biographyAction,
+            loader: biographyLoader,
           },
           {
             path: "interests",
             element: <Interests />,
             action: interestsAction,
+            loader: interestsLoader,
           },
           {
             path: "pictures",
             element: <Pictures />,
             action: picturesAction,
+            loader: picturesLoader,
           },
         ],
       },

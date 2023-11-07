@@ -1,13 +1,13 @@
 export const mailRegex = /^[-.\w]+@(\w+([\w-]*\w)*\.)+\w+([\w-]*\w)*$/;
-export const passwordRegex = /^([\w\d.,#!?$%^&*;:"'{}\/\\=`~()-]{7,50})$/;
-export const usernameRegex = /^([\w-]{4,15})$/;
+export const passwordRegex = /^([\w\d.,#!?$%^&*;:"'{}\/\\=`~()-<>]{7,50})$/;
+export const usernameRegex = /^([a-z]+(-*[a-z]+)?){4,15}$/i;
 
-interface ISigninInput {
+export interface ISigninInput {
   password: string;
   username: string;
 }
 
-interface ISignupInput extends ISigninInput {
+export interface ISignupInput extends ISigninInput {
   email: string;
   firstname: string;
   lastname: string;
@@ -40,6 +40,7 @@ export const isInstanceOfEmailInput = (
 export interface ISigninFormErrors {
   password: string | null;
   username: string | null;
+  err: string | null;
 }
 
 export interface ISignupFormErrors extends ISigninFormErrors {
@@ -71,7 +72,7 @@ const passwordSanitize = (password: string) => {
     return "password must contain at least one alphabetical character";
   if (/\d/.test(password) == false)
     return "password must contain at least one digit";
-  if (/[.,#!?$%^&*;:"'{}\/\\=`~()-]/.test(password) == false)
+  if (/[.,#!?$%^&*;:"'{}\/\\=`~()-<>]/.test(password) == false)
     return "password must contain at least one special character (?./+=:;,!) ...";
   if (passwordRegex.test(password) == false)
     return "password must contain 7 to 50 characters";
@@ -85,6 +86,7 @@ export const signupSanitize = (inputs: { [k: string]: FormDataEntryValue }) => {
     lastname: null,
     password: null,
     username: null,
+    err: null,
   };
 
   if (isInstanceOfISignupInput(inputs)) {
@@ -94,13 +96,15 @@ export const signupSanitize = (inputs: { [k: string]: FormDataEntryValue }) => {
     errors.firstname = /^[a-z-]{2,30}$/i.test(inputs.firstname)
       ? null
       : "firstname must contains between 2 and 30 alphabetical characters";
-    errors.lastname = /^[a-z-]{2,30}$/i.test(inputs.lastname)
+    errors.lastname = /^([a-z]+( *[a-z]+){0,2}){3,20}$/i.test(inputs.lastname)
       ? null
-      : "lastname must contains between 2 and 30 alphabetical characters";
+      : "lastname must contains between 3 and 20 alphabetical characters";
     errors.password = passwordSanitize(inputs.password);
-    errors.username = /^\w{4,15}$/.test(inputs.username)
+    errors.username = usernameRegex.test(inputs.username)
       ? null
-      : "username must contains between 4 and 15 alphanumeric characters";
+      : "username must contains between 5 and 15 alphabetical characters";
+  } else {
+    errors.err = "wrong data";
   }
   return errors;
 };
@@ -109,13 +113,16 @@ export const signinSanitize = (inputs: { [k: string]: FormDataEntryValue }) => {
   let errors: ISigninFormErrors = {
     username: null,
     password: null,
+    err: null,
   };
 
   if (isInstanceOfISigninInput(inputs)) {
     errors.password = passwordSanitize(inputs.password);
-    errors.username = /^\w{4,15}$/.test(inputs.username)
+    errors.username = usernameRegex.test(inputs.username)
       ? null
       : "username must contains between 4 and 15 alphanumeric characters";
+  } else {
+    errors.err = "wrong data";
   }
   return errors;
 };

@@ -1,5 +1,12 @@
+import { redirect } from "react-router-dom";
+import { apiGetUser } from "../utils";
+
 export async function loader() {
-  //TODO: Checker si la route racine suffit à faire les checks + redirection
+  const user = apiGetUser();
+
+  if (!user.registration.match(/\/register\/interests\/?/))
+    return redirect(user.registration);
+
   return null;
 }
 

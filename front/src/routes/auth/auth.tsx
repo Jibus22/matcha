@@ -1,9 +1,12 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, redirect } from "react-router-dom";
 import { GlobalStyle } from "../../style/global-style";
 import { Header, PageContent } from "../styles";
+import { apiGetUser } from "../utils";
 
 export async function loader() {
-  // Si je suis log, rediriger vers "/"
+  const user = apiGetUser();
+
+  if (user) return redirect(user.registration);
   return null;
 }
 

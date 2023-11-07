@@ -1,4 +1,12 @@
+import { redirect } from "react-router-dom";
+import { apiGetUser } from "../utils";
+
 export async function loader() {
+  const user = apiGetUser();
+
+  if (!user.registration.match(/\/register\/pictures\/?/))
+    return redirect(user.registration);
+
   //TODO: Checker si la route racine suffit à faire les checks + redirection
   return null;
 }

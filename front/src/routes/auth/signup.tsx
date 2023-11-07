@@ -10,9 +10,30 @@ import {
 import { ActionFunctionArgs, redirect, useActionData } from "react-router-dom";
 import {
   ISignupFormErrors,
+  ISignupInput,
   isInstanceOfISignupFormErrors,
+  isInstanceOfISignupInput,
   signupSanitize,
 } from "./utils";
+
+const wrongData = {
+  email: null,
+  firstname: null,
+  lastname: null,
+  password: null,
+  username: null,
+  err: "wrong data",
+};
+
+const apiSignup = (inputs: ISignupInput) => {
+  // TODO envoyer une requête à l'API qui va sanitize de son côté
+  // const ret = fetch(POST, "/api/signup", {inputs});
+  const user = { registration: "/register/gender", ...inputs };
+
+  sessionStorage.setItem("user", JSON.stringify(user));
+
+  return null;
+};
 
 export async function loader() {
   // API check si je suis pas déjà signed in, si oui, rediriger là ou il faut
@@ -23,14 +44,16 @@ export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const inputs = Object.fromEntries(formData);
 
+  if (!isInstanceOfISignupInput(inputs)) return wrongData;
+
   const errors = signupSanitize(inputs);
   const err = Object.values(errors).filter((elem) => elem !== null);
 
   if (err.length > 0) return errors;
 
-  // TODO envoyer une requête à l'API qui va sanitize de son côté
-  // const ret = fetch(POST, "/api/signup", {inputs});
-  // if (ret.err) return ret.err;
+  const apiResponse = apiSignup(inputs);
+
+  if (apiResponse) return apiResponse;
 
   return redirect("/auth/signin");
 }
@@ -107,6 +130,7 @@ export default function Signup() {
             Sign Up
           </Button>
         </SignUpForm>
+        {errors?.err && <FormError>{errors.err}</FormError>}
       </Body>
     </>
   );
