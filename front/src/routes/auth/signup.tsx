@@ -14,7 +14,7 @@ import {
   isInstanceOfISignupInput,
   signupSanitize,
 } from "./utils";
-import { apiSignup } from "../controllers/auth";
+import { apiSignup } from "../../controllers/auth";
 
 const wrongData = {
   email: null,

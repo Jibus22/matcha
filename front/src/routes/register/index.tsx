@@ -1,11 +1,12 @@
 import { redirect } from "react-router-dom";
-import { apiGetUser } from "../controllers/user";
+import { apiGetUser } from "../../controllers/user";
 
 export async function loader() {
   const user = apiGetUser();
 
   // Redirige vers root ou une étape d'enregistrement
-  return redirect(user.registration);
+  // return redirect(user.registration);
+  return null;
 }
 
 export default function RegisterIndex() {

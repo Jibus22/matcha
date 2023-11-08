@@ -1,10 +1,15 @@
-import { ISigninInput, ISignupInput } from "../auth/utils";
+import * as User from "../models/user";
+import * as Profile from "../models/profile";
+import * as Session from "../models/session";
+import { ISigninInput, ISignupInput } from "../routes/auth/utils";
+import { isProfileFull } from "./utils";
 
 export const apiSignup = import.meta.env.VITE_STATIC_GH_PAGE
   ? (inputs: ISignupInput) => {
-      const user = { registration: "/register/gender", ...inputs };
+      const { firstname, lastname, username, email, password } = inputs;
 
-      sessionStorage.setItem("user", JSON.stringify(user));
+      User.create({ firstname, lastname, email, password });
+      Profile.create({ username });
 
       return null;
     }
@@ -15,29 +20,27 @@ export const apiSignup = import.meta.env.VITE_STATIC_GH_PAGE
     };
 
 export const apiSignin = import.meta.env.VITE_STATIC_GH_PAGE
-  ? (inputs: ISigninInput) => {
+  ? (inputs: ISigninInput): { err?: {}; registered?: boolean } => {
       const err = {
         username: null,
         password: null,
         err: "authentication error",
       };
 
-      let user = sessionStorage.user;
-      if (!user) {
-        return { err: err };
-      } else {
-        user = JSON.parse(user);
-      }
+      const user = User.get();
+      const profile = Profile.get();
+
+      if (!user || !profile) return { err: err };
       if (
-        inputs.username !== user.username ||
+        inputs.username !== profile.username ||
         inputs.password !== user.password
       )
         return { err: err };
 
       // mimic session cookie from server
-      sessionStorage.setItem("session_id", "false_session_id_0123456789");
+      Session.create();
       // registration contains user registration stage (the route)
-      return { registration: user.registration };
+      return { registered: isProfileFull(profile) };
     }
   : (inputs: ISigninInput) => {
       // TODO envoyer une requête à l'API qui va sanitize de son côté
@@ -54,12 +57,12 @@ export const apiSignin = import.meta.env.VITE_STATIC_GH_PAGE
           },
         };
 
-      return { registration: "" };
+      return { registered: true };
     };
 
 export const apiSignout = import.meta.env.VITE_STATIC_GH_PAGE
   ? () => {
-      sessionStorage.removeItem("session_id");
+      Session.remove();
     }
   : () => {
       // requete API fetch(POST, "/api/signout", {});

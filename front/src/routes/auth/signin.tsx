@@ -19,7 +19,7 @@ import {
   FormError,
   FormStyleInput,
 } from "../styles";
-import { apiSignin } from "../controllers/auth";
+import { apiSignin } from "../../controllers/auth";
 
 const wrongData = {
   username: null,
@@ -47,7 +47,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (apiResponse?.err) return apiResponse?.err;
 
-  return redirect(apiResponse.registration);
+  return redirect(apiResponse.registered ? "/" : "/register");
 }
 
 export default function Signin() {

@@ -1,15 +1,16 @@
 import { Form, Outlet, redirect } from "react-router-dom";
 import { GlobalStyle } from "../../style/global-style";
 import { Header, PageContent } from "../styles";
-import { apiGetUser } from "../controllers/user";
-import { apiSignout } from "../controllers/auth";
+import { apiGetUser } from "../../controllers/user";
+import { apiSignout } from "../../controllers/auth";
 
 export async function loader() {
   const user = apiGetUser();
 
   if (!user) return redirect("/auth");
 
-  // Redirige vers root ou une étape d'enregistrement
+  if (user.registered) return redirect("/");
+
   return null;
 }
 
