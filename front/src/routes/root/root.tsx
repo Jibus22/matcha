@@ -14,7 +14,6 @@ export async function loader() {
 }
 
 export async function action() {
-  // Lancer une requete "/api/signout"
   apiSignout();
   return redirect("/auth/signin");
 }
