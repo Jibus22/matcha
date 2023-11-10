@@ -19,6 +19,14 @@ body {
   background: #f7fafc;
 }
 
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+}
+
 ::selection {
   background: #c6f6d5;
 }

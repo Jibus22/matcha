@@ -1,5 +1,5 @@
 import { Form } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { device } from "../style/breakpoints";
 
 export const Header = styled.nav`
@@ -61,7 +61,7 @@ export const Body = styled.div`
   }
 `;
 
-export const CustomForm = styled(Form)`
+const myForm = css`
   display: grid;
   gap: 12px;
   width: 60%;
@@ -77,13 +77,20 @@ export const CustomForm = styled(Form)`
   }
 `;
 
-export const FormStyleInput = styled.input<{ $errors?: boolean }>`
+export const CustomForm = styled(Form)`
+  ${myForm}
+`;
+
+export const RegisterForm = styled.form`
+  ${myForm}
+`;
+
+export const myInputStyle = css`
   font-weight: 300;
   color: #1f1f1f;
   background-color: rgba(230, 230, 230, 0.5);
   padding: 5px 12px;
   border-radius: 6px;
-  border: ${(p) => (p?.$errors ? "1px red solid" : "none")};
   font-size: 1em;
   width: 100%;
 
@@ -91,6 +98,53 @@ export const FormStyleInput = styled.input<{ $errors?: boolean }>`
     color: rgba(129, 51, 255, 0.5);
     letter-spacing: 1px;
   }
+
+  &:focus {
+    outline: 4px solid rgba(230, 130, 190, 0.3);
+  }
+
+  &[type="radio"],
+  &[type="checkbox"] {
+    outline: none;
+  }
+`;
+
+export const boxStyle = css`
+  display: none;
+  &[type="radio"] + label,
+  &[type="checkbox"] + label {
+    width: 60%;
+    margin-inline-start: auto;
+    margin-inline-end: auto;
+    padding: 0.5em 0.5em;
+    border-radius: 1rem;
+    color: #1f1f1f;
+    background-color: rgba(230, 230, 230, 0.3);
+    border: none;
+    transition: all 0.3s ease-in-out;
+  }
+
+  &[type="radio"]:checked + label,
+  &[type="checkbox"]:checked + label {
+    background: rgb(233, 206, 255);
+    background: linear-gradient(
+      90deg,
+      rgba(233, 206, 255, 0.8533614129245448) 0%,
+      rgba(248, 200, 254, 0.2539216370141807) 38%,
+      rgba(252, 171, 254, 0.21470595073967091) 61%,
+      rgba(255, 116, 155, 1) 100%
+    );
+  }
+
+  &[type="radio"]:hover + label,
+  &[type="checkbox"]:hover + label {
+    cursor: pointer;
+  }
+`;
+
+export const FormStyleInput = styled.input<{ $errors?: boolean }>`
+  ${myInputStyle}
+  border: ${(p) => (p?.$errors ? "1px red solid" : "none")};
 `;
 
 export const FormError = styled.p`
