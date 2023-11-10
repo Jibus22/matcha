@@ -79,6 +79,9 @@ const myForm = css`
 
 export const CustomForm = styled(Form)`
   ${myForm}
+  input:valid {
+    border: 2px solid rgb(114, 219, 88);
+  }
 `;
 
 export const RegisterForm = styled.form`

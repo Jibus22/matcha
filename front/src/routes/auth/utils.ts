@@ -1,6 +1,16 @@
-export const mailRegex = /^[-.\w]+@(\w+([\w-]*\w)*\.)+\w+([\w-]*\w)*$/;
+export const mailRegex = /^\w+([-.]\w+)*@\w+([-.]\w+)*\.\w+$/;
 export const passwordRegex = /^([\w\d.,#!?$%^&*;:"'{}\/\\=`~()-<>]{7,50})$/;
-export const usernameRegex = /^([a-z]+(-*[a-z]+)?){4,15}$/i;
+export const usernameRegex = /^([a-z]+(-[a-z]+$)?){4,15}$/i;
+const firstnameRegex = /^[a-z-]{2,30}$/i;
+const lastnameRegex = /^([a-z]+( *[a-z]+){0,2}){3,20}$/i;
+
+export const mailRegexPattern = "^\\w+([-.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+$";
+console.log(mailRegexPattern);
+export const passwordRegexPattern =
+  "^([\\w\\d.,#!?$%^&*;:\"'{}/\\=`~()-<>]{7,50})$";
+export const usernameRegexPattern = "^([a-zA-Z]+(-[a-zA-Z]+$)?){4,15}$";
+export const firstnameRegexPattern = "^[a-zA-Z-]{2,30}$";
+export const lastnameRegexPattern = "^([a-zA-Z]+( *[a-zA-Z]+){0,2}){3,20}$";
 
 export interface ISigninInput {
   password: string;
@@ -93,10 +103,10 @@ export const signupSanitize = (inputs: { [k: string]: FormDataEntryValue }) => {
     errors.email = mailRegex.test(inputs.email)
       ? null
       : "email must be of the form 'name@mailbox.domain'";
-    errors.firstname = /^[a-z-]{2,30}$/i.test(inputs.firstname)
+    errors.firstname = firstnameRegex.test(inputs.firstname)
       ? null
       : "firstname must contains between 2 and 30 alphabetical characters";
-    errors.lastname = /^([a-z]+( *[a-z]+){0,2}){3,20}$/i.test(inputs.lastname)
+    errors.lastname = lastnameRegex.test(inputs.lastname)
       ? null
       : "lastname must contains between 3 and 20 alphabetical characters";
     errors.password = passwordSanitize(inputs.password);

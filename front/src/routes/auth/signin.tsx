@@ -9,7 +9,9 @@ import {
   ISigninFormErrors,
   isInstanceOfISigninFormErrors,
   isInstanceOfISigninInput,
+  passwordRegexPattern,
   signinSanitize,
+  usernameRegexPattern,
 } from "./utils";
 import {
   BgImage,
@@ -69,6 +71,10 @@ export default function Signin() {
             id="username"
             name="username"
             placeholder="username"
+            minLength={4}
+            maxLength={15}
+            pattern={usernameRegexPattern}
+            title="4 to 15 characters [a-z] and one surrounded dash allowed"
             required
           ></FormStyleInput>
           {errors?.username && <FormError>{errors.username}</FormError>}
@@ -78,6 +84,10 @@ export default function Signin() {
             id="password"
             name="password"
             placeholder="password"
+            minLength={7}
+            maxLength={50}
+            pattern={passwordRegexPattern}
+            title="7 to 50 alphanumeric and special characters allowed"
             required
           ></FormStyleInput>
           {errors?.password && <FormError>{errors.password}</FormError>}
