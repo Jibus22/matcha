@@ -29,7 +29,6 @@ export const Header = styled.nav`
 
 export const PageContent = styled.div`
   position: relative;
-  height: 100vh;
   min-height: 1200px;
   padding-top: 60px;
   background: rgb(216, 248, 255);
@@ -71,6 +70,7 @@ const myForm = css`
   background-color: rgba(218, 167, 250, 0.1);
   backdrop-filter: blur(7px);
   border-radius: 10px;
+  box-shadow: 0 10px 30px -20px rgba(0, 0, 0, 0.25);
 
   @media ${device.sm} {
     width: 100%;

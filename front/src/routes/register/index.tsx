@@ -6,6 +6,9 @@ import SexualPreferences from "./components/SexualPreferences";
 import { Button } from "../styles";
 import Biography from "./components/Biography";
 import styled from "styled-components";
+import Interests from "./components/Interests";
+import Photos from "./components/Photos";
+import Avatar from "./components/Avatar";
 
 export async function loader() {
   const user = apiGetUser();
@@ -27,11 +30,15 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function RegisterIndex() {
-  const idxMax = 4;
+  const idxMax = 6;
   const [index, setIndex] = useState(0);
   const [gender, setGender] = useState("");
   const [sexPreference, setSexPreference] = useState(new Set<string>());
   const [biography, setBiography] = useState("");
+  const [interests, setInterests] = useState(new Set<string>());
+  const [photos, setPhotos] = useState(
+    new Array<{ file: File; url: string; profile?: boolean }>()
+  );
 
   const onGenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGender(e.target.value);
@@ -46,6 +53,74 @@ export default function RegisterIndex() {
         newSet.delete(e.target.value);
         return newSet;
       });
+  };
+
+  const onInterestKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const target = e.currentTarget;
+    if (e.key === "Enter" && target && target.validity.valid) {
+      const value = target.value;
+      setInterests((prev) => {
+        return new Set(prev).add("#" + value);
+      });
+      target.value = "";
+    }
+  };
+
+  const onClickDeleteInterest = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const element = e.currentTarget.nextElementSibling as HTMLElement;
+    const value = element.innerText;
+    setInterests((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(value);
+      return newSet;
+    });
+  };
+
+  const onChangeSetPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const target = e.currentTarget;
+    const files = target.files;
+    let inputPhotos = new Array<{ file: File; url: string }>();
+
+    if (!files || photos.length == 5) return;
+
+    for (let i = 0; i < files.length && i + 1 + photos.length < 6; i++) {
+      const newPhoto = { file: files[i], url: URL.createObjectURL(files[i]) };
+      inputPhotos.push(newPhoto);
+    }
+    setPhotos([...photos, ...inputPhotos]);
+  };
+
+  const onClickRemovePhoto = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const element = e.currentTarget.nextElementSibling as HTMLElement;
+    const src = element.attributes.getNamedItem("src");
+    if (!src) return;
+    setPhotos(photos.filter((value) => value.url !== src.value));
+    URL.revokeObjectURL(src.value);
+  };
+
+  const onClickChooseAvatar = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const element = e.currentTarget.firstElementChild;
+    if (!element) return;
+
+    const src = element.attributes.getNamedItem("src");
+    if (!src) return;
+
+    const value = src.value;
+
+    setPhotos(
+      photos.map((elem) => {
+        const newElem = elem;
+        newElem.profile = elem.url === value;
+        return newElem;
+      })
+    );
   };
 
   const backButton = (
@@ -86,6 +161,32 @@ export default function RegisterIndex() {
           nextBtn={nextButton}
           onChange={(e) => setBiography(e.target.value)}
           biography={biography}
+        />
+      )}
+      {index == 3 && (
+        <Interests
+          backBtn={backButton}
+          nextBtn={nextButton}
+          onKeyUp={onInterestKeyUp}
+          onClick={onClickDeleteInterest}
+          interests={interests}
+        />
+      )}
+      {index == 4 && (
+        <Photos
+          backBtn={backButton}
+          nextBtn={nextButton}
+          onChange={onChangeSetPhoto}
+          onClick={onClickRemovePhoto}
+          photos={photos}
+        />
+      )}
+      {index == 5 && (
+        <Avatar
+          backBtn={backButton}
+          nextBtn={nextButton}
+          onClick={onClickChooseAvatar}
+          photos={photos}
         />
       )}
     </>

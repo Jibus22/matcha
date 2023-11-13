@@ -1,11 +1,5 @@
 import { ReactElement } from "react";
-import {
-  Body,
-  FormStyleInput,
-  RegisterForm,
-  boxStyle,
-  myInputStyle,
-} from "../../styles";
+import { Body, RegisterForm, boxStyle, myInputStyle } from "../../styles";
 import { NavBtnContainer } from "../styles";
 import styled from "styled-components";
 
