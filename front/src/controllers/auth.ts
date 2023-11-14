@@ -14,6 +14,7 @@ export const apiSignup = import.meta.env.VITE_STATIC_GH_PAGE
       return null;
     }
   : (inputs: ISignupInput) => {
+      console.log(inputs);
       // TODO envoyer une requête à l'API qui va sanitize de son côté
       // const ret = fetch(POST, "/api/signup", {inputs});
       return null;

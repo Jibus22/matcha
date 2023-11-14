@@ -15,7 +15,7 @@ export async function loader() {
 
   // Choper le profile pour savoir ce qu'il manque / quel form à afficher
 
-  console.log("loader");
+  console.log(`loader, user: ${user}`);
 
   return null;
 }
