@@ -10,14 +10,15 @@
     "preview": "vite preview",
     "cypress:open": "cypress open",
     "cy:run": "cypress run",
-    "cy:ci": "npm run preview & cypress run --config baseUrl=http://localhost:4173"
+    "cy:ci": "npm run preview & wait-on http://localhost:4173 & cypress run --config baseUrl=http://localhost:4173"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0",
-    "styled-components": "^6.0.8"
+    "styled-components": "^6.0.8",
+    "wait-on": "^7.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
