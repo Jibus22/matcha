@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "cypress:open": "cypress open",
     "cy:run": "cypress run",
-    "cy:ci": "npm run preview & wait-on http://localhost:4173 & cypress run --config baseUrl=http://localhost:4173"
+    "test:e2e:dev": "start-server-and-test dev http://localhost:5173 cypress:open",
+    "test:e2e:run": "start-server-and-test preview http://localhost:4173 cy:run"
   },
   "dependencies": {
     "dotenv": "^16.3.1",

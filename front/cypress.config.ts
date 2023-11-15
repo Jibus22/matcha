@@ -2,9 +2,13 @@ import { defineConfig } from "cypress";
 
 export default defineConfig({
   e2e: {
-    baseUrl: "http://localhost:5173",
     setupNodeEvents(on, config) {
-      // implement node event listeners here
+      const isDev = config.watchForFileChanges;
+      const port = process.env.PORT ?? (isDev ? "5173" : "4173");
+      const configOverrides: Partial<Cypress.PluginConfigOptions> = {
+        baseUrl: `http://localhost:${port}`,
+      };
+      return { ...config, ...configOverrides };
     },
   },
 });

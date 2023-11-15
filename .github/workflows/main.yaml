@@ -13,4 +13,4 @@ jobs:
         with:
           working-directory: ./front
           build: npm run build
-          start: npm run cy:ci
+          start: npm run test:e2e:run
