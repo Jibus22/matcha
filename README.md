@@ -1,14 +1,13 @@
 <p align="center">
   <h1 align="center">Matcha</h1>
   <h4 align="center">Dating web application</h4>
+  <p align="center"><a href="https://github.com/Jibus22/matcha/actions/workflows/main.yaml"><img alt="Cypress test badge" src="https://github.com/Jibus22/matcha/actions/workflows/main.yaml/badge.svg" /></a></p>
 <br />
 <br />
-
 
 <p align="center">
-  <img alt="matcha-home" src="https://github.com/Jibus22/matcha/assets/59167486/c3fa80aa-b93f-4c73-ab2c-d57e8596b9b7" />
+  <img alt="matcha-home" src="https://github.com/Jibus22/matcha/assets/59167486/63ae250e-3968-4f86-a812-c61b36084a1c" />
 </p>
-
 
 ## Project presentation
 

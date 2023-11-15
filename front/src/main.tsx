@@ -1,17 +1,39 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Root from "./routes/root.tsx";
-import Index from "./routes/index.tsx";
+import Auth, { loader as rootLoader } from "./routes/auth/auth.tsx";
 import RootErrorPage from "./errorPages/root-error-page.tsx";
 import ChildrenErrorPage from "./errorPages/children-error-page.tsx";
-import Login from "./routes/login.tsx";
-import Signup from "./routes/signup.tsx";
+import Signup, {
+  loader as signupLoader,
+  action as signupAction,
+} from "./routes/auth/signup.tsx";
+import Signin, {
+  loader as signinLoader,
+  action as signinAction,
+} from "./routes/auth/signin.tsx";
+import PasswordReset, {
+  loader as passwordResetLoader,
+  action as passwordResetAction,
+} from "./routes/auth/password-reset.tsx";
+import Register, {
+  loader as registerLoader,
+  action as registerAction,
+} from "./routes/register/register.tsx";
+import Root, {
+  loader as appLoader,
+  action as appAction,
+} from "./routes/root/root.tsx";
+import Index from "./routes/auth/index.tsx";
+import RegisterIndex, {
+  loader as indexRegisterLoader,
+} from "./routes/register/index.tsx";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Root />,
+    path: "/auth",
+    element: <Auth />,
+    loader: rootLoader,
     errorElement: <RootErrorPage />,
     children: [
       {
@@ -22,14 +44,56 @@ const router = createBrowserRouter([
             element: <Index />,
           },
           {
-            path: "/login",
-            element: <Login />,
+            path: "signin",
+            element: <Signin />,
+            loader: signinLoader,
+            action: signinAction,
           },
           {
-            path: "/signup",
+            path: "signup",
             element: <Signup />,
+            loader: signupLoader,
+            action: signupAction,
+          },
+          {
+            path: "passwordreset",
+            element: <PasswordReset />,
+            loader: passwordResetLoader,
+            action: passwordResetAction,
           },
         ],
+      },
+    ],
+  },
+  {
+    path: "/register",
+    element: <Register />,
+    errorElement: <RootErrorPage />,
+    loader: registerLoader,
+    action: registerAction,
+    children: [
+      {
+        errorElement: <ChildrenErrorPage />,
+        children: [
+          {
+            index: true,
+            element: <RegisterIndex />,
+            loader: indexRegisterLoader,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: "/",
+    element: <Root />,
+    errorElement: <RootErrorPage />,
+    loader: appLoader,
+    action: appAction,
+    children: [
+      {
+        errorElement: <ChildrenErrorPage />,
+        children: [{}],
       },
     ],
   },
