@@ -1,12 +1,15 @@
 import { ReactElement } from "react";
 import { Body, RegisterForm, boxStyle, myInputStyle } from "../../styles";
 import styled from "styled-components";
+import { NavBtnContainer } from "../styles";
 
 export default function Gender({
+  backBtn,
   onChange,
   nextBtn,
   gender,
 }: {
+  backBtn?: ReactElement;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   nextBtn?: ReactElement;
   gender: string;
@@ -36,7 +39,10 @@ export default function Gender({
             required
           ></FormStyleRadio>
           <label htmlFor="male">male</label>
-          {gender.length > 0 && nextBtn && nextBtn}
+          <NavBtnContainer>
+            <div>{backBtn && backBtn}</div>
+            <div>{gender.length > 0 && nextBtn && nextBtn}</div>
+          </NavBtnContainer>
         </RegisterForm>
       </Body>
     </>

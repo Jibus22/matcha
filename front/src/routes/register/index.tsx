@@ -9,20 +9,26 @@ import styled from "styled-components";
 import Interests from "./components/Interests";
 import Photos from "./components/Photos";
 import Avatar from "./components/Avatar";
+import Validation from "./components/Validation";
+import { useLoaderData } from "react-router-dom";
+import { IUser } from "../../models/user";
+import { IProfile } from "../../models/profile";
+import Age from "./components/Age";
 
 export async function loader() {
   const user = apiGetUser();
 
-  // Choper le profile pour savoir ce qu'il manque / quel form à afficher
+  console.log(`loader, user: `);
+  console.log(user);
 
-  console.log(`loader, user: ${user}`);
-
-  return null;
+  return user;
 }
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const inputs = Object.fromEntries(formData);
+  console.log("action register index");
+  console.log(formData);
   console.log(inputs);
   // Requete API pour post/update les données et retour éventuel d'erreurs sinon
   // redirection vers la page suivante.
@@ -30,7 +36,9 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function RegisterIndex() {
-  const idxMax = 6;
+  const idxMax = 7;
+  const user = useLoaderData() as IUser & IProfile & { registered: boolean };
+  const [birthdate, setBirthdate] = useState("");
   const [index, setIndex] = useState(0);
   const [gender, setGender] = useState("");
   const [sexPreference, setSexPreference] = useState(new Set<string>());
@@ -39,6 +47,16 @@ export default function RegisterIndex() {
   const [photos, setPhotos] = useState(
     new Array<{ file: File; url: string; profile?: boolean }>()
   );
+
+  const onBirthDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const currentTarget = e.currentTarget;
+
+    if (currentTarget.validity.valid) {
+      setBirthdate(currentTarget.value);
+    } else {
+      setBirthdate("");
+    }
+  };
 
   const onGenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGender(e.target.value);
@@ -141,13 +159,21 @@ export default function RegisterIndex() {
         <progress max="100" value={(index / idxMax) * 100}></progress>
       </ProgressBar>
       {index == 0 && (
+        <Age
+          nextBtn={nextButton}
+          onChange={onBirthDateChange}
+          birthdate={birthdate}
+        />
+      )}
+      {index == 1 && (
         <Gender
+          backBtn={backButton}
           nextBtn={nextButton}
           onChange={onGenderChange}
           gender={gender}
         />
       )}
-      {index == 1 && (
+      {index == 2 && (
         <SexualPreferences
           backBtn={backButton}
           nextBtn={nextButton}
@@ -155,7 +181,7 @@ export default function RegisterIndex() {
           sexPreference={sexPreference}
         />
       )}
-      {index == 2 && (
+      {index == 3 && (
         <Biography
           backBtn={backButton}
           nextBtn={nextButton}
@@ -163,7 +189,7 @@ export default function RegisterIndex() {
           biography={biography}
         />
       )}
-      {index == 3 && (
+      {index == 4 && (
         <Interests
           backBtn={backButton}
           nextBtn={nextButton}
@@ -172,7 +198,7 @@ export default function RegisterIndex() {
           interests={interests}
         />
       )}
-      {index == 4 && (
+      {index == 5 && (
         <Photos
           backBtn={backButton}
           nextBtn={nextButton}
@@ -181,12 +207,24 @@ export default function RegisterIndex() {
           photos={photos}
         />
       )}
-      {index == 5 && (
+      {index == 6 && (
         <Avatar
           backBtn={backButton}
           nextBtn={nextButton}
           onClick={onClickChooseAvatar}
           photos={photos}
+        />
+      )}
+      {index == 7 && (
+        <Validation
+          age={birthdate}
+          gender={gender}
+          sexPreference={sexPreference}
+          biography={biography}
+          interests={interests}
+          photos={photos}
+          user={user}
+          backBtn={backButton}
         />
       )}
     </>

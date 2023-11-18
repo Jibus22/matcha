@@ -41,6 +41,7 @@ export default function Interests({
             </label>
             <FormStyleInput
               onKeyUp={onKeyUp}
+              type="text"
               id="interests"
               name="interests"
               placeholder="court hunting, weightlifting, tuning..."

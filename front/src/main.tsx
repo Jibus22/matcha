@@ -27,6 +27,7 @@ import Root, {
 import Index from "./routes/auth/index.tsx";
 import RegisterIndex, {
   loader as indexRegisterLoader,
+  action as indexRegisterAction,
 } from "./routes/register/index.tsx";
 
 const router = createBrowserRouter([
@@ -79,6 +80,7 @@ const router = createBrowserRouter([
             index: true,
             element: <RegisterIndex />,
             loader: indexRegisterLoader,
+            action: indexRegisterAction,
           },
         ],
       },

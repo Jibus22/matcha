@@ -1,9 +1,11 @@
 export interface IProfile {
   username: string;
+  age?: string;
   gender?: string;
   sexual_preference?: string;
   biography?: string;
   fame_rating?: number;
+  interests?: string[];
 }
 
 export const get = () => {
