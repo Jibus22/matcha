@@ -5,7 +5,7 @@ import { apiGetUser } from "../../controllers/user";
 import { apiSignout } from "../../controllers/auth";
 
 export async function loader() {
-  const user = apiGetUser();
+  const user = await apiGetUser();
 
   if (!user) return redirect("/auth");
 

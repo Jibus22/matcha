@@ -40,7 +40,7 @@ export const apiSignin = import.meta.env.VITE_STATIC_GH_PAGE
 
       // mimic session cookie from server
       Session.create();
-      // registration contains user registration stage (the route)
+
       return { registered: isProfileFull(profile) };
     }
   : (inputs: ISigninInput) => {

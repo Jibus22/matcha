@@ -1,5 +1,5 @@
-import { ReactElement, useState } from "react";
-import { Body, CustomForm, RegisterButton } from "../../styles";
+import { ReactElement } from "react";
+import { Body, RegisterButton } from "../../styles";
 import { IUser } from "../../../models/user";
 import { IProfile } from "../../../models/profile";
 import UserProfileCard from "./UserProfileCard";
@@ -26,13 +26,17 @@ export default function Validation({
   user: IUser & IProfile & { registered: boolean };
 }) {
   const submit = useSubmit();
+  const sexPref =
+    sexPreference.size === 1
+      ? [...sexPreference][0] === gender
+        ? "homosexual"
+        : "heterosexual"
+      : "bisexual";
   const sendData = () => {
     let formData = new FormData();
     formData.append("age", age);
     formData.append("gender", gender);
-    [...sexPreference].forEach((elem) =>
-      formData.append("sexpreference", elem)
-    );
+    formData.append("sexual_preference", sexPref);
     formData.append("biography", biography);
     [...interests].forEach((elem) => formData.append("interests", elem));
 
@@ -47,12 +51,6 @@ export default function Validation({
 
     submit(formData, { method: "post", encType: "multipart/form-data" });
   };
-  const sexPref =
-    sexPreference.size === 1
-      ? [...sexPreference][0] === gender
-        ? "homosexual"
-        : "heterosexual"
-      : "bisexual";
 
   return (
     <>

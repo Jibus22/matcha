@@ -1,22 +1,22 @@
 import { ActionFunctionArgs } from "react-router";
-import { apiGetUser } from "../../controllers/user";
+import { apiGetUser, apiRegisterUserProfile } from "../../controllers/user";
 import Gender from "./components/Gender";
 import { useState } from "react";
 import SexualPreferences from "./components/SexualPreferences";
-import { Button, RegisterButton } from "../styles";
+import { RegisterButton } from "../styles";
 import Biography from "./components/Biography";
 import styled from "styled-components";
 import Interests from "./components/Interests";
 import Photos from "./components/Photos";
 import Avatar from "./components/Avatar";
 import Validation from "./components/Validation";
-import { useLoaderData } from "react-router-dom";
+import { redirect, useActionData, useLoaderData } from "react-router-dom";
 import { IUser } from "../../models/user";
 import { IProfile } from "../../models/profile";
 import Age from "./components/Age";
 
 export async function loader() {
-  const user = apiGetUser();
+  const user = await apiGetUser();
 
   console.log(`loader, user: `);
   console.log(user);
@@ -26,17 +26,22 @@ export async function loader() {
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
-  const inputs = Object.fromEntries(formData);
   console.log("action register index");
   console.log(formData);
-  console.log(inputs);
   // Requete API pour post/update les données et retour éventuel d'erreurs sinon
   // redirection vers la page suivante.
-  return null;
+
+  const apiResponse = await apiRegisterUserProfile(formData);
+
+  if (apiResponse?.err) return apiResponse?.err;
+
+  return redirect("/");
+  // return null;
 }
 
 export default function RegisterIndex() {
   const idxMax = 7;
+  const error = useActionData() as string | null;
   const user = useLoaderData() as IUser & IProfile & { registered: boolean };
   const [birthdate, setBirthdate] = useState("");
   const [index, setIndex] = useState(0);
@@ -47,6 +52,12 @@ export default function RegisterIndex() {
   const [photos, setPhotos] = useState(
     new Array<{ file: File; url: string; profile?: boolean }>()
   );
+
+  if (error) {
+    if (error === "biography") setIndex(3);
+    else if (error === "interests") setIndex(4);
+    //TODO etc... + find a mean to display error on the ui.
+  }
 
   const onBirthDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const currentTarget = e.currentTarget;
@@ -71,6 +82,16 @@ export default function RegisterIndex() {
         newSet.delete(e.target.value);
         return newSet;
       });
+  };
+
+  const onBiographyKeyUp = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const target = e.currentTarget;
+    if (!e.key.match(/^[\w,;:=+/.?!éèê ç"'à-]$|Backspace|Enter/)) {
+      e.preventDefault();
+      target.value = biography;
+      return;
+    }
+    if (target.value !== biography) setBiography(target.value);
   };
 
   const onInterestKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -152,16 +173,6 @@ export default function RegisterIndex() {
       Next
     </RegisterButton>
   );
-
-  const onBiographyKeyUp = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    const target = e.currentTarget;
-    if (!e.key.match(/^[\w,;:=+/.?!éèê ç"'à-]$|Backspace|Enter/)) {
-      e.preventDefault();
-      target.value = biography;
-      return;
-    }
-    if (target.value !== biography) setBiography(target.value);
-  };
 
   return (
     <>

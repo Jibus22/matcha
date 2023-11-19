@@ -29,6 +29,10 @@ import RegisterIndex, {
   loader as indexRegisterLoader,
   action as indexRegisterAction,
 } from "./routes/register/index.tsx";
+import RootIndex, {
+  loader as indexRootLoader,
+  action as indexRootAction,
+} from "./routes/root/index.tsx";
 
 const router = createBrowserRouter([
   {
@@ -95,7 +99,14 @@ const router = createBrowserRouter([
     children: [
       {
         errorElement: <ChildrenErrorPage />,
-        children: [{}],
+        children: [
+          {
+            index: true,
+            element: <RootIndex />,
+            loader: indexRootLoader,
+            action: indexRootAction,
+          },
+        ],
       },
     ],
   },

@@ -4,7 +4,7 @@ import { Header, PageContent } from "../styles";
 import { apiGetUser } from "../../controllers/user";
 
 export async function loader() {
-  const user = apiGetUser();
+  const user = await apiGetUser();
 
   if (user) return redirect(user.registered ? "/" : "/register");
 
