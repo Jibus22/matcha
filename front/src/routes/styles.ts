@@ -86,6 +86,7 @@ export const CustomForm = styled(Form)`
 
 export const RegisterForm = styled.form`
   ${myForm}
+  background-color: rgba(208, 208, 255, 0.9);
 `;
 
 export const myInputStyle = css`
@@ -174,6 +175,10 @@ export const Button = styled.button`
   &:hover {
     cursor: pointer;
   }
+`;
+
+export const RegisterButton = styled(Button)`
+  margin: 2px 42px;
 `;
 
 export const BgImage = styled.div`

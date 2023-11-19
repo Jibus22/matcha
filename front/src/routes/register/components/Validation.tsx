@@ -1,5 +1,5 @@
 import { ReactElement, useState } from "react";
-import { Body, CustomForm } from "../../styles";
+import { Body, CustomForm, RegisterButton } from "../../styles";
 import { IUser } from "../../../models/user";
 import { IProfile } from "../../../models/profile";
 import UserProfileCard from "./UserProfileCard";
@@ -72,9 +72,9 @@ export default function Validation({
           ></UserProfileCard>
         </CardCtnr>
         {backBtn && backBtn}
-        <button type="button" onClick={sendData}>
+        <RegisterButton type="button" onClick={sendData}>
           Confirm Registration
-        </button>
+        </RegisterButton>
       </Body>
     </>
   );

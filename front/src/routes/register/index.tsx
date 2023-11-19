@@ -3,7 +3,7 @@ import { apiGetUser } from "../../controllers/user";
 import Gender from "./components/Gender";
 import { useState } from "react";
 import SexualPreferences from "./components/SexualPreferences";
-import { Button } from "../styles";
+import { Button, RegisterButton } from "../styles";
 import Biography from "./components/Biography";
 import styled from "styled-components";
 import Interests from "./components/Interests";
@@ -153,6 +153,16 @@ export default function RegisterIndex() {
     </RegisterButton>
   );
 
+  const onBiographyKeyUp = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const target = e.currentTarget;
+    if (!e.key.match(/^[\w,;:=+/.?!éèê ç"'à-]$|Backspace|Enter/)) {
+      e.preventDefault();
+      target.value = biography;
+      return;
+    }
+    if (target.value !== biography) setBiography(target.value);
+  };
+
   return (
     <>
       <ProgressBar>
@@ -185,7 +195,7 @@ export default function RegisterIndex() {
         <Biography
           backBtn={backButton}
           nextBtn={nextButton}
-          onChange={(e) => setBiography(e.target.value)}
+          onKeyUp={onBiographyKeyUp}
           biography={biography}
         />
       )}
@@ -230,10 +240,6 @@ export default function RegisterIndex() {
     </>
   );
 }
-
-const RegisterButton = styled(Button)`
-  margin: 2px 42px;
-`;
 
 const ProgressBar = styled.div`
   display: flex;

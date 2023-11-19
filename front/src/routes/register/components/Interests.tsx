@@ -81,7 +81,7 @@ const InterestCard = styled.div`
   align-items: center;
   padding-left: 25px;
   border-radius: 0.5rem;
-  background-color: rgba(230, 200, 200, 0.2);
+  background-color: rgba(230, 230, 230, 0.4);
   box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.25);
 
   > p {

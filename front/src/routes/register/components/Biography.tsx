@@ -6,12 +6,12 @@ import styled from "styled-components";
 export default function Biography({
   backBtn,
   nextBtn,
-  onChange,
+  onKeyUp,
   biography,
 }: {
   backBtn?: ReactElement;
   nextBtn?: ReactElement;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onKeyUp: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   biography: string;
 }) {
   return (
@@ -21,7 +21,7 @@ export default function Biography({
         <BiographyForm>
           <label htmlFor="biography">between 20 and 500 characters</label>
           <FormStyleTextArea
-            onChange={onChange}
+            onKeyUp={onKeyUp}
             id="biography"
             name="biography"
             defaultValue={biography}
@@ -30,6 +30,7 @@ export default function Biography({
             minLength={20}
             rows={10}
             cols={50}
+            required
           ></FormStyleTextArea>
           <p>{biography.length}/500 characters</p>
           <NavBtnContainer>
@@ -51,7 +52,7 @@ const BiographyForm = styled(RegisterForm)`
 
 const FormStyleTextArea = styled.textarea`
   ${myInputStyle}
-  background-color: rgba(230, 230, 230, 0.2);
+  background-color: rgba(230, 230, 230, 0.4);
   border: none;
   resize: none;
 `;
