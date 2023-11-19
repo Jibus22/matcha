@@ -84,6 +84,10 @@ const InterestCard = styled.div`
   background-color: rgba(230, 200, 200, 0.2);
   box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.25);
 
+  > p {
+    word-break: break-word;
+  }
+
   > button {
     position: absolute;
     background-color: rgba(250, 250, 250, 0.4);
@@ -94,6 +98,7 @@ const InterestCard = styled.div`
     height: 20px;
     border-radius: 20px;
   }
+
   > button:hover {
     cursor: pointer;
   }

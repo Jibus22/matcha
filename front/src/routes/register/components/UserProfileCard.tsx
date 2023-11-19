@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import { IUser } from "../../../models/user";
 import { IProfile } from "../../../models/profile";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function UserProfileCard({
   user,
@@ -10,13 +10,16 @@ export default function UserProfileCard({
   user: IUser & IProfile & { registered: boolean };
   photos: Array<{ file?: File; url: string; profile?: boolean }>;
 }) {
-  const [orderedPhotos, setOrderedPhotos] = useState([
-    photos.find((photo) => photo.profile === true),
-    ...photos.filter((photo) => photo.profile === false),
-  ]);
   const [index, setIndex] = useState(0);
   const [hover, setHover] = useState(false);
   const [overlay, setOverlay] = useState(false);
+  const orderedPhotos = useMemo(
+    () => [
+      photos.find((photo) => photo.profile === true),
+      ...photos.filter((photo) => photo.profile === false),
+    ],
+    photos
+  );
 
   const nextPhoto = () => setIndex(index + 1);
   const prevPhoto = () => setIndex(index - 1);
@@ -33,7 +36,13 @@ export default function UserProfileCard({
     </ButtonRight>
   );
 
-  const age = new Date().getFullYear() - new Date(user.age || "").getFullYear();
+  const birthDate = new Date(user.age || "");
+  const nowDate = new Date();
+  const monthDiff = nowDate.getMonth() - birthDate.getMonth();
+  const dayDiff = nowDate.getDate() - birthDate.getDate();
+  let age = nowDate.getFullYear() - birthDate.getFullYear();
+
+  if (monthDiff < 0 || (monthDiff == 0 && dayDiff < 0)) age -= 1;
 
   return (
     <>
@@ -151,6 +160,7 @@ const DisplayInterests = styled.div`
   flex-wrap: wrap;
   line-height: 1;
   font-size: 0.8em;
+  justify-content: center;
 
   > span {
     border-radius: 8px;
@@ -190,11 +200,8 @@ const Infos = styled.div`
 `;
 
 const Card = styled.div`
-  margin-inline-start: auto;
-  margin-inline-end: auto;
   background-color: rgba(230, 230, 230, 0.8);
   border-radius: 8px;
-  max-width: 450px;
   color: #161a82;
 `;
 

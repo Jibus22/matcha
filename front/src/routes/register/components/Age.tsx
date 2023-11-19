@@ -18,6 +18,7 @@ export default function Age({
         <RegisterForm>
           <FormStyleDate
             onChange={onChange}
+            value={birthdate ? birthdate : ""}
             type="date"
             id="birthdate"
             name="birthdate"
