@@ -21,7 +21,9 @@ export const apiSignup = import.meta.env.VITE_STATIC_GH_PAGE
     };
 
 export const apiSignin = import.meta.env.VITE_STATIC_GH_PAGE
-  ? (inputs: ISigninInput): { err?: {}; registered?: boolean } => {
+  ? async (
+      inputs: ISigninInput
+    ): Promise<{ err?: {}; registered?: boolean }> => {
       const err = {
         username: null,
         password: null,
@@ -29,7 +31,7 @@ export const apiSignin = import.meta.env.VITE_STATIC_GH_PAGE
       };
 
       const user = User.get();
-      const profile = Profile.get();
+      const profile = await Profile.get();
 
       if (!user || !profile) return { err: err };
       if (

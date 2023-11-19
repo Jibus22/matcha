@@ -73,7 +73,6 @@ export default function Signup() {
               id="firstname"
               name="firstname"
               placeholder="firstname"
-              pattern={firstnameRegexPattern}
               title="firstname must contains between 2 and 30 alphabetical characters"
               required
             ></FormStyleInput>
@@ -99,7 +98,6 @@ export default function Signup() {
               id="email"
               name="email"
               placeholder="email"
-              pattern={mailRegexPattern}
               title="email must be of the form 'name@mailbox.domain'"
               required
             ></FormStyleInput>
@@ -129,7 +127,6 @@ export default function Signup() {
               placeholder="password"
               minLength={7}
               maxLength={50}
-              pattern={passwordRegexPattern}
               title="7 to 50 alphanumeric and special characters allowed"
               required
             ></FormStyleInput>

@@ -11,6 +11,10 @@ export const apiGetUser = async (): Promise<
   const profile = await Profile.get();
   const sid = Session.get();
 
+  console.log(profile);
+  console.log(user);
+  console.log(sid);
+
   if (!sid || !user || !profile) return null;
 
   return { ...user, ...profile, registered: isProfileFull(profile) };

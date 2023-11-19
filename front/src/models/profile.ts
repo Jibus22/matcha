@@ -32,7 +32,6 @@ export const get = async (): Promise<IProfile | null> => {
       console.log(`failed to query photos from ${profile.username}`);
     }
   }
-
   return profile;
 };
 
