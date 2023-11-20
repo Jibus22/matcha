@@ -16,10 +16,11 @@ import { IProfile } from "../../models/profile";
 import Age from "./components/Age";
 
 export async function loader() {
+  console.log("register index loader:start:");
   const user = await apiGetUser();
-
-  console.log(`loader, user: `);
+  console.log("register index loader user:");
   console.log(user);
+  console.log("register index loader:end:");
 
   return user;
 }

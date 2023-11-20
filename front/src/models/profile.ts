@@ -27,7 +27,7 @@ export const get = async (): Promise<IProfile | null> => {
         .equals(profile.username)
         .toArray();
 
-      profile.photos = queryphotos[0].photos;
+      if (queryphotos.length > 0) profile.photos = queryphotos[0].photos;
     } catch (e) {
       console.log(`failed to query photos from ${profile.username}`);
     }
@@ -40,19 +40,21 @@ export const create = (profile: IProfile) => {
 };
 
 export const update = async (profile: Partial<IProfile>) => {
-  const currentProfile = (await get()) || {};
+  const currentProfile = await get();
+
+  if (!currentProfile) return null;
 
   // remove photos bc indexedDB handle photos, not sessionstorage
   if ("photos" in currentProfile) delete currentProfile.photos;
 
   if ("photos" in profile) {
-    if (profile.username && profile.photos) {
+    if (currentProfile.username && profile.photos) {
       // Store photos in indexedDB;
       try {
-        console.log(`adding ${profile.username} photos.`);
+        console.log(`adding ${currentProfile.username} photos.`);
         console.log(profile.photos);
         await db.userPhotos.add({
-          username: profile.username,
+          username: currentProfile.username,
           photos: profile.photos,
         });
       } catch (error) {

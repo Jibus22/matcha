@@ -2,7 +2,6 @@ import * as User from "../models/user";
 import * as Session from "../models/session";
 import * as Profile from "../models/profile";
 import { isProfileFull } from "./utils";
-import { db } from "../db/db";
 
 export const apiGetUser = async (): Promise<
   (User.IUser & Profile.IProfile & { registered: boolean }) | null
@@ -10,10 +9,6 @@ export const apiGetUser = async (): Promise<
   const user = User.get();
   const profile = await Profile.get();
   const sid = Session.get();
-
-  console.log(profile);
-  console.log(user);
-  console.log(sid);
 
   if (!sid || !user || !profile) return null;
 
@@ -55,10 +50,7 @@ export const apiRegisterUserProfile = async (form: FormData) => {
 
   userProfile.photos = photos;
 
-  console.log("apiRegisterUserProfile:");
-  console.log(userProfile);
-
-  Profile.update(userProfile);
+  await Profile.update(userProfile);
 
   return {};
 };

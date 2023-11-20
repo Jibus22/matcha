@@ -13,13 +13,12 @@ export default function UserProfileCard({
   const [index, setIndex] = useState(0);
   const [hover, setHover] = useState(false);
   const [overlay, setOverlay] = useState(false);
-  const orderedPhotos = useMemo(
-    () => [
-      photos.find((photo) => photo.profile === true),
-      ...photos.filter((photo) => photo.profile === false),
-    ],
-    photos
-  );
+  const orderedPhotos = useMemo(() => {
+    const profile = photos.find((photo) => photo.profile === true);
+    const result = profile ? [profile] : [];
+
+    return [...result, ...photos.filter((photo) => !photo.profile)];
+  }, photos);
 
   const nextPhoto = () => setIndex(index + 1);
   const prevPhoto = () => setIndex(index - 1);
