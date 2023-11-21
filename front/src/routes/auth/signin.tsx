@@ -10,6 +10,7 @@ import {
   isInstanceOfISigninFormErrors,
   isInstanceOfISigninInput,
   signinSanitize,
+  usernameRegexPattern,
 } from "./utils";
 import {
   BgImage,
@@ -71,8 +72,9 @@ export default function Signin() {
             placeholder="username"
             minLength={4}
             maxLength={15}
-            // pattern={usernameRegexPattern}
+            pattern={usernameRegexPattern}
             title="4 to 15 characters [a-z] and one surrounded dash allowed"
+            autoFocus
             required
           ></FormStyleInput>
           {errors?.username && <FormError>{errors.username}</FormError>}

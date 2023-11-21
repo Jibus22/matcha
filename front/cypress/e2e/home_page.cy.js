@@ -23,8 +23,11 @@ describe("The unsigned Home Page", () => {
 });
 
 describe("The signup page", () => {
-  it("should use all navigation button of /auth/signup", () => {
+  beforeEach(() => {
     cy.visit("/auth/signup");
+  });
+
+  it("should use all navigation button of /auth/signup", () => {
     cy.findByRole("link", { name: /home/i })
       .click()
       .url()
@@ -35,11 +38,71 @@ describe("The signup page", () => {
       .should("include", "/auth/signin")
       .go("back");
   });
+
+  it("should fill and test validity of the the form", () => {
+    cy.focused().invoke("attr", "name").should("eq", "firstname");
+    cy.focused()
+      .then(($el) => $el[0].checkValidity())
+      .should("be.false");
+    cy.focused()
+      .type("coucou")
+      .should("have.value", "coucou")
+      .then(($el) => $el[0].checkValidity())
+      .should("be.true");
+    cy.focused().type("hey{enter}");
+
+    cy.focused().invoke("attr", "name").should("eq", "lastname");
+    cy.focused().type("{enter}");
+    cy.focused()
+      .type("bl")
+      .should("have.value", "bl")
+      .then(($el) => $el[0].checkValidity())
+      .should("be.false");
+    cy.focused()
+      .type("ablabla")
+      .should("have.value", "blablabla")
+      .then(($el) => $el[0].checkValidity())
+      .should("be.true");
+    cy.focused().type("{enter}");
+
+    cy.focused().invoke("attr", "name").should("eq", "email");
+    cy.focused()
+      .type("kjhefkjh@kjhkjh/jh")
+      .then(($el) => $el[0].checkValidity())
+      .should("be.false");
+    cy.focused()
+      .clear()
+      .type("user@mail.fr")
+      .then(($el) => $el[0].checkValidity())
+      .should("be.true");
+    cy.focused().type("{enter}");
+
+    cy.focused().invoke("attr", "name").should("eq", "username");
+    cy.focused()
+      .type("kjhkjh34")
+      .then(($el) => $el[0].checkValidity())
+      .should("be.false");
+    cy.focused()
+      .clear()
+      .type("myuser-name")
+      .then(($el) => $el[0].checkValidity())
+      .should("be.true");
+    cy.focused().type("{enter}");
+
+    cy.focused().invoke("attr", "name").should("eq", "password");
+    cy.focused()
+      .type("that's a password")
+      .then(($el) => $el[0].checkValidity())
+      .should("be.true");
+  });
 });
 
 describe("The signin page", () => {
-  it("should use all navigation button of /auth/signin", () => {
+  beforeEach(() => {
     cy.visit("/auth/signin");
+  });
+
+  it("should use all navigation button of /auth/signin", () => {
     cy.findByRole("link", { name: /sign in/i })
       .click()
       .url()
@@ -58,5 +121,56 @@ describe("The signin page", () => {
       .click()
       .url()
       .should("include", "/auth/signup");
+  });
+
+  it("should fill and test validity of the the form", () => {
+    cy.focused().invoke("attr", "name").should("eq", "username");
+    cy.focused()
+      .type("kjhkjh34")
+      .then(($el) => $el[0].checkValidity())
+      .should("be.false");
+    cy.focused()
+      .clear()
+      .type("myuser-name")
+      .then(($el) => $el[0].checkValidity())
+      .should("be.true");
+    cy.focused().type("{enter}");
+
+    cy.focused().invoke("attr", "name").should("eq", "password");
+    cy.focused()
+      .type("that's a password")
+      .then(($el) => $el[0].checkValidity())
+      .should("be.true");
+  });
+});
+
+describe("The passwordreset page", () => {
+  beforeEach(() => {
+    cy.visit("/auth/passwordreset");
+  });
+
+  it("should use all navigation button of /auth/passwordreset", () => {
+    cy.findByRole("link", { name: /sign in/i })
+      .click()
+      .url()
+      .should("include", "/auth/signin")
+      .go("back");
+    cy.findByRole("link", { name: /home/i })
+      .click()
+      .url()
+      .should("include", "/auth");
+  });
+
+  it("should fill and test validity of the the form", () => {
+    cy.focused().invoke("attr", "name").should("eq", "email");
+    cy.focused()
+      .type("kjhkjh34")
+      .then(($el) => $el[0].checkValidity())
+      .should("be.false");
+    cy.focused()
+      .clear()
+      .type("adress@mail.fr")
+      .then(($el) => $el[0].checkValidity())
+      .should("be.true");
   });
 });

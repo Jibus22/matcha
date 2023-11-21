@@ -70,7 +70,10 @@ export default function Signup() {
               id="firstname"
               name="firstname"
               placeholder="firstname"
+              minLength={2}
+              maxLength={30}
               title="firstname must contains between 2 and 30 alphabetical characters"
+              autoFocus
               required
             ></FormStyleInput>
             {errors?.firstname && <FormError>{errors.firstname}</FormError>}
@@ -83,6 +86,8 @@ export default function Signup() {
               name="lastname"
               placeholder="lastname"
               pattern={lastnameRegexPattern}
+              minLength={3}
+              maxLength={20}
               title="lastname must contains between 3 and 20 alphabetical characters"
               required
             ></FormStyleInput>

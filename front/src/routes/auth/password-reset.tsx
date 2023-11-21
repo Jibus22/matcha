@@ -56,6 +56,7 @@ export default function PasswordReset() {
             id="email"
             name="email"
             placeholder="email"
+            autoFocus
             required
           ></FormStyleInput>
           {errors?.email && <FormError>{errors.email}</FormError>}
