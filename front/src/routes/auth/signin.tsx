@@ -9,9 +9,7 @@ import {
   ISigninFormErrors,
   isInstanceOfISigninFormErrors,
   isInstanceOfISigninInput,
-  passwordRegexPattern,
   signinSanitize,
-  usernameRegexPattern,
 } from "./utils";
 import {
   BgImage,

@@ -10,12 +10,9 @@ import {
 import { ActionFunctionArgs, redirect, useActionData } from "react-router-dom";
 import {
   ISignupFormErrors,
-  firstnameRegexPattern,
   isInstanceOfISignupFormErrors,
   isInstanceOfISignupInput,
   lastnameRegexPattern,
-  mailRegexPattern,
-  passwordRegexPattern,
   signupSanitize,
   usernameRegexPattern,
 } from "./utils";

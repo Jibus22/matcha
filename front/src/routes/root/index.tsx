@@ -20,6 +20,7 @@ export async function loader() {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  console.log(request);
   return null;
 }
 
@@ -31,6 +32,7 @@ export default function RootIndex() {
     return { url };
   });
 
+  console.log(error);
   return (
     <>
       <Body>
