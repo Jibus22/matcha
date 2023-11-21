@@ -42,12 +42,18 @@ describe("The signup page", () => {
   it("should fill and test validity of the the form", () => {
     cy.focused().invoke("attr", "name").should("eq", "firstname");
     cy.focused()
-      .then(($el) => $el[0].checkValidity())
+      .then(($el) => {
+        const elem = $el[0] as HTMLSelectElement;
+        return elem.checkValidity();
+      })
       .should("be.false");
     cy.focused()
       .type("coucou")
       .should("have.value", "coucou")
-      .then(($el) => $el[0].checkValidity())
+      .then(($el) => {
+        const elem = $el[0] as HTMLSelectElement;
+        return elem.checkValidity();
+      })
       .should("be.true");
     cy.focused().type("hey{enter}");
 
@@ -56,43 +62,64 @@ describe("The signup page", () => {
     cy.focused()
       .type("bl")
       .should("have.value", "bl")
-      .then(($el) => $el[0].checkValidity())
+      .then(($el) => {
+        const elem = $el[0] as HTMLSelectElement;
+        return elem.checkValidity();
+      })
       .should("be.false");
     cy.focused()
       .type("ablabla")
       .should("have.value", "blablabla")
-      .then(($el) => $el[0].checkValidity())
+      .then(($el) => {
+        const elem = $el[0] as HTMLSelectElement;
+        return elem.checkValidity();
+      })
       .should("be.true");
     cy.focused().type("{enter}");
 
     cy.focused().invoke("attr", "name").should("eq", "email");
     cy.focused()
       .type("kjhefkjh@kjhkjh/jh")
-      .then(($el) => $el[0].checkValidity())
+      .then(($el) => {
+        const elem = $el[0] as HTMLSelectElement;
+        return elem.checkValidity();
+      })
       .should("be.false");
     cy.focused()
       .clear()
       .type("user@mail.fr")
-      .then(($el) => $el[0].checkValidity())
+      .then(($el) => {
+        const elem = $el[0] as HTMLSelectElement;
+        return elem.checkValidity();
+      })
       .should("be.true");
     cy.focused().type("{enter}");
 
     cy.focused().invoke("attr", "name").should("eq", "username");
     cy.focused()
       .type("kjhkjh34")
-      .then(($el) => $el[0].checkValidity())
+      .then(($el) => {
+        const elem = $el[0] as HTMLSelectElement;
+        return elem.checkValidity();
+      })
       .should("be.false");
     cy.focused()
       .clear()
       .type("myuser-name")
-      .then(($el) => $el[0].checkValidity())
+      .then(($el) => {
+        const elem = $el[0] as HTMLSelectElement;
+        return elem.checkValidity();
+      })
       .should("be.true");
     cy.focused().type("{enter}");
 
     cy.focused().invoke("attr", "name").should("eq", "password");
     cy.focused()
       .type("that's a password")
-      .then(($el) => $el[0].checkValidity())
+      .then(($el) => {
+        const elem = $el[0] as HTMLSelectElement;
+        return elem.checkValidity();
+      })
       .should("be.true");
   });
 });
@@ -127,19 +154,29 @@ describe("The signin page", () => {
     cy.focused().invoke("attr", "name").should("eq", "username");
     cy.focused()
       .type("kjhkjh34")
-      .then(($el) => $el[0].checkValidity())
+      .then(($el) => {
+        const elem = $el[0] as HTMLSelectElement;
+        return elem.checkValidity();
+      })
       .should("be.false");
     cy.focused()
       .clear()
       .type("myuser-name")
-      .then(($el) => $el[0].checkValidity())
+      .then(($el) => {
+        const elem = $el[0] as HTMLSelectElement;
+        return elem.checkValidity();
+      })
       .should("be.true");
     cy.focused().type("{enter}");
 
     cy.focused().invoke("attr", "name").should("eq", "password");
+    cy.focused().should("match", ":invalid");
     cy.focused()
       .type("that's a password")
-      .then(($el) => $el[0].checkValidity())
+      .then(($el) => {
+        const elem = $el[0] as HTMLSelectElement;
+        return elem.checkValidity();
+      })
       .should("be.true");
   });
 });
@@ -165,12 +202,18 @@ describe("The passwordreset page", () => {
     cy.focused().invoke("attr", "name").should("eq", "email");
     cy.focused()
       .type("kjhkjh34")
-      .then(($el) => $el[0].checkValidity())
+      .then(($el) => {
+        const elem = $el[0] as HTMLSelectElement;
+        return elem.checkValidity();
+      })
       .should("be.false");
     cy.focused()
       .clear()
       .type("adress@mail.fr")
-      .then(($el) => $el[0].checkValidity())
+      .then(($el) => {
+        const elem = $el[0] as HTMLSelectElement;
+        return elem.checkValidity();
+      })
       .should("be.true");
   });
 });
