@@ -1,17 +1,19 @@
-import { Form, Link, Outlet, redirect } from "react-router-dom";
+import { Form, Link, Outlet, redirect, useLoaderData } from "react-router-dom";
 import { GlobalStyle } from "../../style/global-style";
 import { Header, PageContent } from "../styles";
 import { apiGetUser } from "../../controllers/user";
 import { apiSignout } from "../../controllers/auth";
+import { isProfileFull } from "../../controllers/utils";
+import { IFullUser } from "../../models/user";
 
 export async function loader() {
   const user = await apiGetUser();
 
   if (!user) return redirect("/auth");
 
-  if (!user.registered) return redirect("/register");
+  if (!isProfileFull(user)) return redirect("/register");
 
-  return null;
+  return user;
 }
 
 export async function action() {
@@ -20,6 +22,8 @@ export async function action() {
 }
 
 export default function Root() {
+  const user = useLoaderData() as IFullUser;
+
   return (
     <>
       <GlobalStyle />
@@ -30,7 +34,7 @@ export default function Root() {
         </Form>
       </Header>
       <PageContent>
-        <Outlet />
+        <Outlet context={user} />
       </PageContent>
     </>
   );

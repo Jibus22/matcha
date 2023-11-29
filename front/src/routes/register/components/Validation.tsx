@@ -1,7 +1,6 @@
 import { ReactElement } from "react";
 import { Body, RegisterButton } from "../../styles";
-import { IUser } from "../../../models/user";
-import { IProfile } from "../../../models/profile";
+import { IFullUser } from "../../../models/user";
 import UserProfileCard from "./UserProfileCard";
 import styled from "styled-components";
 import { useSubmit } from "react-router-dom";
@@ -23,7 +22,7 @@ export default function Validation({
   biography: string;
   interests: Set<string>;
   photos: Array<{ file: File; url: string; profile?: boolean }>;
-  user: IUser & IProfile & { registered: boolean };
+  user: IFullUser;
 }) {
   const submit = useSubmit();
   const sexPref =

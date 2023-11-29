@@ -43,7 +43,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (err.length > 0) return errors;
 
-  const apiResponse = apiSignup(inputs);
+  const apiResponse = await apiSignup(inputs);
 
   if (apiResponse) return apiResponse;
 

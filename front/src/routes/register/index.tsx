@@ -10,40 +10,34 @@ import Interests from "./components/Interests";
 import Photos from "./components/Photos";
 import Avatar from "./components/Avatar";
 import Validation from "./components/Validation";
-import { redirect, useActionData, useLoaderData } from "react-router-dom";
-import { IUser } from "../../models/user";
-import { IProfile } from "../../models/profile";
+import { redirect, useActionData, useOutletContext } from "react-router-dom";
 import Age from "./components/Age";
+import { IFullUser } from "../../models/user";
 
 export async function loader() {
-  console.log("register index loader:start:");
-  const user = await apiGetUser();
-  console.log("register index loader user:");
-  console.log(user);
-  console.log("register index loader:end:");
-
-  return user;
+  return null;
 }
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
+  const user = await apiGetUser();
   console.log("action register index");
   console.log(formData);
-  // Requete API pour post/update les données et retour éventuel d'erreurs sinon
-  // redirection vers la page suivante.
+  console.log("user:");
+  console.log(user);
 
-  const apiResponse = await apiRegisterUserProfile(formData);
+  const apiResponse = await apiRegisterUserProfile(formData, user?.id || -1);
 
   if (apiResponse?.err) return apiResponse?.err;
 
+  console.log("before redirection to '/'");
   return redirect("/");
-  // return null;
 }
 
 export default function RegisterIndex() {
   const idxMax = 7;
   const error = useActionData() as string | null;
-  const user = useLoaderData() as IUser & IProfile & { registered: boolean };
+  const user = useOutletContext() as IFullUser;
   const [birthdate, setBirthdate] = useState("");
   const [index, setIndex] = useState(0);
   const [gender, setGender] = useState("");

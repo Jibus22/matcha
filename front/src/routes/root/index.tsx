@@ -1,22 +1,14 @@
 import {
   ActionFunctionArgs,
   useActionData,
-  useLoaderData,
+  useOutletContext,
 } from "react-router-dom";
-import { apiGetUser } from "../../controllers/user";
-import { IProfile } from "../../models/profile";
-import { IUser } from "../../models/user";
 import UserProfileCard from "../register/components/UserProfileCard";
 import { Body } from "../styles";
+import { IFullUser } from "../../models/user";
 
 export async function loader() {
-  console.log("root index loader:start:");
-  const user = await apiGetUser();
-  console.log("root index loader user:");
-  console.log(user);
-  console.log("root index loader:end:");
-
-  return user;
+  return null;
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -26,13 +18,15 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function RootIndex() {
   const error = useActionData();
-  const user = useLoaderData() as IUser & IProfile & { registered: boolean };
+  const user = useOutletContext() as IFullUser;
   const photos = user.photos?.map((elem) => {
     const url = URL.createObjectURL(elem);
     return { url };
   });
 
   console.log(error);
+  console.log("user from outlet context:");
+  console.log(user);
   return (
     <>
       <Body>

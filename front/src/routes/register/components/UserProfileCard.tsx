@@ -1,13 +1,12 @@
 import styled, { css } from "styled-components";
-import { IUser } from "../../../models/user";
-import { IProfile } from "../../../models/profile";
 import { useMemo, useState } from "react";
+import { IFullUser } from "../../../models/user";
 
 export default function UserProfileCard({
   user,
   photos,
 }: {
-  user: IUser & IProfile & { registered: boolean };
+  user: IFullUser;
   photos: Array<{ file?: File; url: string; profile?: boolean }>;
 }) {
   const [index, setIndex] = useState(0);

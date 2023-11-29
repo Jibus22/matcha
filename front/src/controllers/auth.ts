@@ -1,15 +1,11 @@
 import * as User from "../models/user";
-import * as Profile from "../models/profile";
 import * as Session from "../models/session";
 import { ISigninInput, ISignupInput } from "../routes/auth/utils";
-import { isProfileFull } from "./utils";
+import { getCookie, isProfileFull } from "./utils";
 
 export const apiSignup = import.meta.env.VITE_STATIC_GH_PAGE
-  ? (inputs: ISignupInput) => {
-      const { firstname, lastname, username, email, password } = inputs;
-
-      User.create({ firstname, lastname, email, password });
-      Profile.create({ username });
+  ? async (inputs: ISignupInput) => {
+      await User.create(inputs);
 
       return null;
     }
@@ -30,20 +26,19 @@ export const apiSignin = import.meta.env.VITE_STATIC_GH_PAGE
         err: "authentication error",
       };
 
-      const user = User.get();
-      const profile = await Profile.get();
+      const user = await User.findByUsername(inputs.username);
 
-      if (!user || !profile) return { err: err };
-      if (
-        inputs.username !== profile.username ||
-        inputs.password !== user.password
-      )
+      if (!user || !user.id || inputs.password !== user.password)
         return { err: err };
 
-      // mimic session cookie from server
-      Session.create();
+      const session = await Session.create(user.id);
 
-      return { registered: isProfileFull(profile) };
+      if (!session) return { err: err };
+
+      document.cookie = `matcha_sid=${session.sid}; SameSite=strict;`;
+      document.cookie = `matcha_uid=${session.uid}; SameSite=strict;`;
+
+      return { registered: isProfileFull(user) };
     }
   : (inputs: ISigninInput) => {
       // TODO envoyer une requête à l'API qui va sanitize de son côté
@@ -65,7 +60,14 @@ export const apiSignin = import.meta.env.VITE_STATIC_GH_PAGE
 
 export const apiSignout = import.meta.env.VITE_STATIC_GH_PAGE
   ? () => {
-      Session.remove();
+      const id = getCookie("matcha_uid");
+
+      if (!id) return null;
+
+      Session.remove(parseInt(id));
+
+      document.cookie = `matcha_sid=; SameSite=strict;`;
+      document.cookie = `matcha_uid=; SameSite=strict;`;
     }
   : () => {
       // requete API fetch(POST, "/api/signout", {});

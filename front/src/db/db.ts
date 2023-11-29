@@ -1,22 +1,59 @@
-import Dexie, { Table } from "dexie";
+import Dexie, { IndexableType, Table } from "dexie";
 
-export interface Photos {
-  id?: number;
-  username: string;
-  photos: File[];
+export interface IDbUser {
+  id?: IndexableType;
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+  username?: string;
+  gender?: string;
+  sexual_preference?: string;
+  biography?: string;
+  age?: string;
+  fame_rating?: number;
 }
 
-export class DexiePhotos extends Dexie {
-  // 'friends' is added by dexie when declaring the stores()
-  // We just tell the typing system this is the case
-  userPhotos!: Table<Photos>;
+export interface IDbPhotos {
+  id?: IndexableType;
+  user_id: IndexableType;
+  photo: File;
+  isAvatar: boolean;
+}
+
+export interface IDbTagMap {
+  id?: IndexableType;
+  user_id: IndexableType;
+  tag_id: IndexableType;
+}
+
+export interface IDbTag {
+  id?: IndexableType;
+  name: string;
+}
+
+export interface IDbSession {
+  uid: IndexableType;
+  sid: IndexableType;
+}
+
+export class MatchaDatabase extends Dexie {
+  user!: Table<IDbUser>;
+  photos!: Table<IDbPhotos>;
+  tagmap!: Table<IDbTagMap>;
+  tags!: Table<IDbTag>;
+  session!: Table<IDbSession>;
 
   constructor() {
     super("matchaDatabase");
     this.version(1).stores({
-      userPhotos: "++id, username, photos", // Primary key and indexed props
+      user: "++id, firstname, lastname, &email, password, &username, gender, sexual_preference, biography, age, fame_rating",
+      photos: "++id, user_id, photo, isAvatar",
+      tagmap: "++id, user_id, tag_id",
+      tags: "++id, &name",
+      session: "uid, &sid",
     });
   }
 }
 
-export const db = new DexiePhotos();
+export const db = new MatchaDatabase();
