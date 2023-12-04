@@ -13,6 +13,7 @@ import Validation from "./components/Validation";
 import { redirect, useActionData, useOutletContext } from "react-router-dom";
 import Age from "./components/Age";
 import { IFullUser } from "../../models/user";
+import { IDbPhotos } from "../../db/db";
 
 export async function loader() {
   return null;
@@ -40,12 +41,12 @@ export default function RegisterIndex() {
   const user = useOutletContext() as IFullUser;
   const [birthdate, setBirthdate] = useState("");
   const [index, setIndex] = useState(0);
-  const [gender, setGender] = useState("");
+  const [gender, setGender] = useState<"male" | "female" | "">("");
   const [sexPreference, setSexPreference] = useState(new Set<string>());
   const [biography, setBiography] = useState("");
   const [interests, setInterests] = useState(new Set<string>());
   const [photos, setPhotos] = useState(
-    new Array<{ file: File; url: string; profile?: boolean }>()
+    new Array<Omit<IDbPhotos, "id" | "user_id">>()
   );
 
   if (error) {
@@ -65,7 +66,8 @@ export default function RegisterIndex() {
   };
 
   const onGenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGender(e.target.value);
+    const value = e.currentTarget.value;
+    if (value == "male" || value == "female") setGender(value);
   };
 
   const onSexPreferencesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,12 +118,20 @@ export default function RegisterIndex() {
   const onChangeSetPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.currentTarget;
     const files = target.files;
-    let inputPhotos = new Array<{ file: File; url: string }>();
+    let inputPhotos = new Array<{
+      photo: File;
+      path: string;
+      isAvatar: boolean;
+    }>();
 
     if (!files || photos.length == 5) return;
 
     for (let i = 0; i < files.length && i + 1 + photos.length < 6; i++) {
-      const newPhoto = { file: files[i], url: URL.createObjectURL(files[i]) };
+      const newPhoto = {
+        photo: files[i],
+        path: URL.createObjectURL(files[i]),
+        isAvatar: false,
+      };
       inputPhotos.push(newPhoto);
     }
     setPhotos([...photos, ...inputPhotos]);
@@ -133,7 +143,7 @@ export default function RegisterIndex() {
     const element = e.currentTarget.nextElementSibling as HTMLElement;
     const src = element.attributes.getNamedItem("src");
     if (!src) return;
-    setPhotos(photos.filter((value) => value.url !== src.value));
+    setPhotos(photos.filter((value) => value.path !== src.value));
     URL.revokeObjectURL(src.value);
   };
 
@@ -151,7 +161,7 @@ export default function RegisterIndex() {
     setPhotos(
       photos.map((elem) => {
         const newElem = elem;
-        newElem.profile = elem.url === value;
+        newElem.isAvatar = elem.path === value;
         return newElem;
       })
     );
@@ -231,7 +241,7 @@ export default function RegisterIndex() {
           photos={photos}
         />
       )}
-      {index == 7 && (
+      {index == 7 && (gender == "male" || gender == "female") && (
         <Validation
           age={birthdate}
           gender={gender}

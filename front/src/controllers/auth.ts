@@ -5,7 +5,7 @@ import { getCookie, isProfileFull } from "./utils";
 
 export const apiSignup = import.meta.env.VITE_STATIC_GH_PAGE
   ? async (inputs: ISignupInput) => {
-      await User.create(inputs);
+      await User.signUpCreate(inputs);
 
       return null;
     }

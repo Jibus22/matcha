@@ -1,23 +1,30 @@
 import styled, { css } from "styled-components";
 import { useMemo, useState } from "react";
-import { IFullUser } from "../../../models/user";
+import { IFullUser } from "../models/user";
 
-export default function UserProfileCard({
-  user,
-  photos,
-}: {
-  user: IFullUser;
-  photos: Array<{ file?: File; url: string; profile?: boolean }>;
-}) {
+export default function UserProfileCard({ user }: { user: IFullUser }) {
   const [index, setIndex] = useState(0);
   const [hover, setHover] = useState(false);
   const [overlay, setOverlay] = useState(false);
-  const orderedPhotos = useMemo(() => {
-    const profile = photos.find((photo) => photo.profile === true);
-    const result = profile ? [profile] : [];
 
-    return [...result, ...photos.filter((photo) => !photo.profile)];
-  }, photos);
+  const orderedPhotos = useMemo(() => {
+    const profile = user.photos?.find((photo) => photo.isAvatar === true);
+    let result = profile ? [profile] : [];
+
+    if (user.photos) {
+      result = [
+        ...result,
+        ...user.photos.filter((ph) => ph.isAvatar === false),
+      ];
+      result = result.map((photo) => {
+        if (!photo.path && photo.photo) {
+          photo.path = URL.createObjectURL(photo.photo);
+        }
+        return photo;
+      });
+    }
+    return result;
+  }, [user]);
 
   const nextPhoto = () => setIndex(index + 1);
   const prevPhoto = () => setIndex(index - 1);
@@ -49,7 +56,10 @@ export default function UserProfileCard({
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
         >
-          <img src={orderedPhotos[index]?.url} onClick={toggleOverlay}></img>
+          <img
+            src={orderedPhotos[index]?.path || undefined}
+            onClick={toggleOverlay}
+          ></img>
           {(hover || isMobileDevice()) && index > 0 && buttonLeft}
           {(hover || isMobileDevice()) &&
             index + 1 < orderedPhotos.length &&
@@ -62,7 +72,10 @@ export default function UserProfileCard({
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
           >
-            <img src={orderedPhotos[index]?.url} onClick={toggleOverlay}></img>
+            <img
+              src={orderedPhotos[index]?.path || undefined}
+              onClick={toggleOverlay}
+            ></img>
             {(hover || isMobileDevice()) && index > 0 && buttonLeft}
             {(hover || isMobileDevice()) &&
               index + 1 < orderedPhotos.length &&
@@ -123,7 +136,7 @@ const photoNavBtn = css`
 
 const OverLay = styled.div`
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 60px);
   background-color: rgba(10, 10, 10, 0.8);
   position: absolute;
   z-index: 1;

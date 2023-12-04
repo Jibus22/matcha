@@ -25,7 +25,7 @@ export default function Gender({
             id="female"
             value="female"
             name="gender"
-            defaultChecked={gender.length ? true : false}
+            defaultChecked={gender == "female" ? true : false}
             required
           ></FormStyleRadio>
           <label htmlFor="female">female</label>
@@ -35,7 +35,7 @@ export default function Gender({
             id="male"
             value="male"
             name="gender"
-            defaultChecked={gender.length ? true : false}
+            defaultChecked={gender == "male" ? true : false}
             required
           ></FormStyleRadio>
           <label htmlFor="male">male</label>

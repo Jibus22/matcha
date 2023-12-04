@@ -24,7 +24,12 @@ export const Header = styled.nav`
     font-size: calc(1.05rem + 0.1vw);
     font-weight: 300;
     cursor: pointer;
+    padding: 0.6em;
   }
+`;
+
+export const HeaderRoot = styled(Header)`
+  position: absolute;
 `;
 
 export const PageContent = styled.div`
@@ -38,6 +43,11 @@ export const PageContent = styled.div`
     rgba(171, 156, 255, 1) 48%,
     rgba(255, 129, 194, 1) 100%
   );
+`;
+
+export const PageContentRoot = styled(PageContent)`
+  display: flex;
+  min-height: 100vh;
 `;
 
 export const Body = styled.div`

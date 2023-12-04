@@ -1,9 +1,10 @@
 import { ReactElement } from "react";
 import { Body, RegisterButton } from "../../styles";
 import { IFullUser } from "../../../models/user";
-import UserProfileCard from "./UserProfileCard";
 import styled from "styled-components";
 import { useSubmit } from "react-router-dom";
+import UserProfileCard from "../../../components/UserProfileCard";
+import { IDbPhotos } from "../../../db/db";
 
 export default function Validation({
   backBtn,
@@ -17,11 +18,11 @@ export default function Validation({
 }: {
   backBtn?: ReactElement;
   age: string;
-  gender: string;
+  gender: "male" | "female";
   sexPreference: Set<string>;
   biography: string;
   interests: Set<string>;
-  photos: Array<{ file: File; url: string; profile?: boolean }>;
+  photos: Omit<IDbPhotos, "id" | "user_id">[];
   user: IFullUser;
 }) {
   const submit = useSubmit();
@@ -40,12 +41,12 @@ export default function Validation({
     [...interests].forEach((elem) => formData.append("interests", elem));
 
     const orderedPhotos = [
-      photos.find((photo) => photo.profile === true),
-      ...photos.filter((photo) => photo.profile === false),
+      photos.find((photo) => photo.isAvatar === true),
+      ...photos.filter((photo) => photo.isAvatar === false),
     ];
 
     orderedPhotos.forEach((elem) => {
-      if (elem) formData.append("photos", elem.file);
+      if (elem && elem.photo) formData.append("photos", elem.photo);
     });
 
     submit(formData, { method: "post", encType: "multipart/form-data" });
@@ -64,8 +65,8 @@ export default function Validation({
               gender,
               sexual_preference: sexPref,
               interests: [...interests],
+              photos: photos,
             }}
-            photos={photos}
           ></UserProfileCard>
         </CardCtnr>
         {backBtn && backBtn}

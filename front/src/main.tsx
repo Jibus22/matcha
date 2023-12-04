@@ -33,6 +33,9 @@ import RootIndex, {
   loader as indexRootLoader,
   action as indexRootAction,
 } from "./routes/root/index.tsx";
+import Profile from "./routes/root/profile.tsx";
+import Stalkers from "./routes/root/stalkers.tsx";
+import Admirers from "./routes/root/admirers.tsx";
 
 const router = createBrowserRouter([
   {
@@ -105,6 +108,18 @@ const router = createBrowserRouter([
             element: <RootIndex />,
             loader: indexRootLoader,
             action: indexRootAction,
+          },
+          {
+            path: "profile",
+            element: <Profile />,
+          },
+          {
+            path: "stalkers",
+            element: <Stalkers />,
+          },
+          {
+            path: "admirers",
+            element: <Admirers />,
           },
         ],
       },

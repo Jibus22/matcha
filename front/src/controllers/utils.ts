@@ -16,7 +16,9 @@ export const isProfileFull = (profile: IFullUser) => {
     !profile.gender ||
     !profile.sexual_preference ||
     !profile.biography ||
+    !profile.interests ||
     !profile.interests.length ||
+    !profile.photos ||
     !profile.photos.length
   );
 };

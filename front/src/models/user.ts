@@ -1,14 +1,19 @@
 import { IndexableType } from "dexie";
-import { IDbUser, db } from "../db/db";
+import { IDbPhotos, IDbUser, db } from "../db/db";
 import * as Interests from "./interests";
 import * as Photos from "./photos";
 
 export interface IFullUser extends IDbUser {
   interests?: string[];
-  photos?: File[];
+  photos?: Omit<IDbPhotos, "id" | "user_id">[];
 }
 
-export const create = async (user: IDbUser) => {
+export const signUpCreate = async (
+  user: Pick<
+    IDbUser,
+    "firstname" | "lastname" | "email" | "password" | "username"
+  >
+) => {
   const { firstname, lastname, email, password, username } = user;
 
   const idUser = await db.user.add({
@@ -17,6 +22,11 @@ export const create = async (user: IDbUser) => {
     email,
     password,
     username,
+    gender: null,
+    sexual_preference: null,
+    biography: null,
+    age: null,
+    fame_rating: null,
   });
 
   return idUser;
@@ -31,8 +41,13 @@ export const update = async (
   const createPhotos = async () => {
     if (!photos) return;
     await Photos.createMany(
-      photos.map((photo, idx) => {
-        return { user_id: uid, photo: photo, isAvatar: idx == 0 };
+      photos.map((photo) => {
+        return {
+          user_id: uid,
+          photo: photo.photo,
+          isAvatar: photo.isAvatar,
+          path: photo.path,
+        };
       })
     );
   };

@@ -4,7 +4,9 @@ import { IDbPhotos, db } from "../db/db";
 export const findByUserId = async (id: IndexableType) => {
   const photos = await db.photos.where("user_id").equals(id).toArray();
 
-  return photos.map((ph) => ph.photo);
+  return photos.map((ph) => {
+    return { path: ph.path, photo: ph.photo, isAvatar: ph.isAvatar };
+  });
 };
 
 export const create = async (photo: IDbPhotos) => {

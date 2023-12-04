@@ -2,6 +2,7 @@ import { ReactElement } from "react";
 import { Body, RegisterForm } from "../../styles";
 import { NavBtnContainer } from "../styles";
 import styled from "styled-components";
+import { IDbPhotos } from "../../../db/db";
 
 export default function Photos({
   backBtn,
@@ -14,7 +15,7 @@ export default function Photos({
   nextBtn?: ReactElement;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  photos: Array<{ file: File; url: string }>;
+  photos: Omit<IDbPhotos, "id" | "user_id">[];
 }) {
   return (
     <>
@@ -29,7 +30,7 @@ export default function Photos({
                     <button type="button" onClick={onClick}>
                       X
                     </button>
-                    <img src={elem.url}></img>
+                    <img src={elem.path || undefined}></img>
                   </PhotoPreview>
                 );
               })}

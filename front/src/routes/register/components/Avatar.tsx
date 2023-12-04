@@ -2,6 +2,7 @@ import { ReactElement } from "react";
 import { Body, RegisterForm } from "../../styles";
 import { NavBtnContainer } from "../styles";
 import styled from "styled-components";
+import { IDbPhotos } from "../../../db/db";
 
 export default function Avatar({
   backBtn,
@@ -12,7 +13,7 @@ export default function Avatar({
   backBtn?: ReactElement;
   nextBtn?: ReactElement;
   onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  photos: Array<{ file: File; url: string; profile?: boolean }>;
+  photos: Omit<IDbPhotos, "id" | "user_id">[];
 }) {
   return (
     <>
@@ -26,10 +27,10 @@ export default function Avatar({
                   <PhotoPreview
                     key={idx}
                     type="button"
-                    $selected={elem.profile === true}
+                    $selected={elem.isAvatar === true}
                     onClick={onClick}
                   >
-                    <img src={elem.url}></img>
+                    <img src={elem.path || undefined}></img>
                   </PhotoPreview>
                 );
               })}
@@ -38,7 +39,7 @@ export default function Avatar({
           <NavBtnContainer>
             <div>{backBtn && backBtn}</div>
             <div>
-              {photos.filter((elem) => elem.profile === true).length > 0 &&
+              {photos.filter((elem) => elem.isAvatar === true).length > 0 &&
                 nextBtn &&
                 nextBtn}
             </div>

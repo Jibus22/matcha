@@ -4,8 +4,6 @@ import { IFullUser } from "../../models/user";
 
 export async function loader() {
   return null;
-  // Avec l'api static, on chope le json qui repertorie tout les users pour en
-  // faire une grosse liste d'objets user et on renvoie ça
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -13,19 +11,15 @@ export async function action({ request }: ActionFunctionArgs) {
   return null;
 }
 
-export default function RootIndex() {
+export default function Stalkers() {
   const user = useOutletContext() as IFullUser;
 
   console.log(user);
 
-  // Les boutons de tri/filtre prendront la liste de user et fera un tri/filtre
-  // avec. Maybe mettre les filtres/tris et les setters dans le parent pour garder
-  // les réglages pendant la navigation. Voir dans localstorage
-
   return (
     <>
       <Body>
-        <h2>ROOT</h2>
+        <h2>STALKERS</h2>
       </Body>
     </>
   );

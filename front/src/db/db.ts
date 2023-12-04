@@ -6,18 +6,19 @@ export interface IDbUser {
   lastname: string;
   email: string;
   password: string;
-  username?: string;
-  gender?: string;
-  sexual_preference?: string;
-  biography?: string;
-  age?: string;
-  fame_rating?: number;
+  username: string;
+  gender: "male" | "female" | null;
+  sexual_preference: "homosexual" | "heterosexual" | "bisexual" | null;
+  biography: string | null;
+  age: string | null;
+  fame_rating: number | null;
 }
 
 export interface IDbPhotos {
   id?: IndexableType;
   user_id: IndexableType;
-  photo: File;
+  photo: File | null;
+  path: string | null;
   isAvatar: boolean;
 }
 
@@ -48,7 +49,7 @@ export class MatchaDatabase extends Dexie {
     super("matchaDatabase");
     this.version(1).stores({
       user: "++id, firstname, lastname, &email, password, &username, gender, sexual_preference, biography, age, fame_rating",
-      photos: "++id, user_id, photo, isAvatar",
+      photos: "++id, user_id, photo, isAvatar, path",
       tagmap: "++id, user_id, tag_id",
       tags: "++id, &name",
       session: "uid, &sid",
