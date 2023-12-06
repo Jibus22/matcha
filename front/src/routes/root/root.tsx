@@ -54,8 +54,8 @@ export default function Root() {
 const SideNav = styled.nav`
   display: flex;
   flex-direction: column;
-  width: 17%;
-  min-width: 200px;
+  width: 10%;
+  min-width: 120px;
   padding: 1em 1em 1em 2em;
 
   > a {

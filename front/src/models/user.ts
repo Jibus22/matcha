@@ -84,17 +84,35 @@ export const findById = async (
   return { ...user, interests: interests, photos: photos };
 };
 
+const userJoinTables = async (user: IDbUser) => {
+  if (!user || !user.id) return null;
+
+  const [interests, photos] = await Promise.all([
+    Interests.findByUserId(user.id),
+    Photos.findByUserId(user.id),
+  ]);
+
+  return { ...user, interests: interests, photos: photos };
+};
+
 export const findByUsername = async (
   username: string
 ): Promise<IFullUser | null> => {
   const user = await db.user.where("username").equals(username).toArray();
 
-  if (!user.length || !user[0].id) return null;
+  const fullUser = await userJoinTables((user && user[0]) || null);
+  return fullUser;
+};
 
-  const [interests, photos] = await Promise.all([
-    Interests.findByUserId(user[0].id),
-    Photos.findByUserId(user[0].id),
-  ]);
-
-  return { ...user[0], interests: interests, photos: photos };
+export const findAll = async () => {
+  const users = await db.user.toArray();
+  const fullUsers = await Promise.all(
+    users.map(async (user) => {
+      const fullUser = await userJoinTables((user && user) || null);
+      if (!fullUser) return null;
+      const { id, ...rest } = fullUser;
+      return rest;
+    })
+  );
+  return fullUsers.filter((user) => user !== null);
 };

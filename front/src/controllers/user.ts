@@ -3,6 +3,11 @@ import * as User from "../models/user";
 import { getCookie, isProfileFull } from "./utils";
 import { IndexableType } from "dexie";
 
+export const apiGetUsers = async (): Promise<(User.IFullUser | null)[]> => {
+  const users = await User.findAll();
+  return users;
+};
+
 export const apiGetUser = async (): Promise<User.IFullUser | null> => {
   const id = getCookie("matcha_uid");
   if (!id) return null;

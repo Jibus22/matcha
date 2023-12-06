@@ -1,11 +1,11 @@
-import { ActionFunctionArgs, useOutletContext } from "react-router-dom";
+import { ActionFunctionArgs, useLoaderData } from "react-router-dom";
 import { Body } from "../styles";
 import { IFullUser } from "../../models/user";
+import { apiGetUsers } from "../../controllers/user";
 
 export async function loader() {
-  return null;
-  // Avec l'api static, on chope le json qui repertorie tout les users pour en
-  // faire une grosse liste d'objets user et on renvoie ça
+  const users = await apiGetUsers();
+  return users;
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -14,18 +14,24 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function RootIndex() {
-  const user = useOutletContext() as IFullUser;
-
-  console.log(user);
-
-  // Les boutons de tri/filtre prendront la liste de user et fera un tri/filtre
-  // avec. Maybe mettre les filtres/tris et les setters dans le parent pour garder
-  // les réglages pendant la navigation. Voir dans localstorage
+  const allUsers = useLoaderData() as IFullUser[];
+  // const {users, loadUsers} = useOutletContext();
+  // const { query } = useLoaderData();
+  // useEffect(() => {
+  //   loadUsers();
+  //   // ->> user est un state managé avec rxjs et loadUsers est un user setter
+  //   // qui va appeler une api avec une pipeline de rate limiting
+  // }, [query]);
 
   return (
     <>
       <Body>
         <h2>ROOT</h2>
+        <ul>
+          {allUsers.map((user, idx) => {
+            return <li key={idx}>{user.username}</li>;
+          })}
+        </ul>
       </Body>
     </>
   );
