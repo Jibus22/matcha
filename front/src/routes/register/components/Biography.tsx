@@ -2,18 +2,17 @@ import { ReactElement } from "react";
 import { Body, RegisterForm, myInputStyle } from "../../styles";
 import { NavBtnContainer } from "../styles";
 import styled from "styled-components";
+import { onBiographyKeyUp, useBiography } from "../store/biography.rxjs";
 
 export default function Biography({
   backBtn,
   nextBtn,
-  onKeyUp,
-  biography,
 }: {
   backBtn?: ReactElement;
   nextBtn?: ReactElement;
-  onKeyUp: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
-  biography: string;
 }) {
+  const biography = useBiography();
+
   return (
     <>
       <Body>
@@ -21,7 +20,7 @@ export default function Biography({
         <BiographyForm>
           <label htmlFor="biography">between 20 and 500 characters</label>
           <FormStyleTextArea
-            onKeyUp={onKeyUp}
+            onKeyUp={onBiographyKeyUp}
             id="biography"
             name="biography"
             defaultValue={biography}

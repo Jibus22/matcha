@@ -2,21 +2,21 @@ import { ReactElement } from "react";
 import { Body, RegisterForm } from "../../styles";
 import { NavBtnContainer } from "../styles";
 import styled from "styled-components";
-import { IDbPhotos } from "../../../db/db";
+import {
+  onChangeSetPhoto,
+  onClickRemovePhoto,
+  usePhotos,
+} from "../store/photos.rxjs";
 
 export default function Photos({
   backBtn,
   nextBtn,
-  onChange,
-  onClick,
-  photos,
 }: {
   backBtn?: ReactElement;
   nextBtn?: ReactElement;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  photos: Omit<IDbPhotos, "id" | "user_id">[];
 }) {
+  const photos = usePhotos();
+
   return (
     <>
       <Body>
@@ -27,7 +27,7 @@ export default function Photos({
               {photos.map((elem, idx) => {
                 return (
                   <PhotoPreview key={idx}>
-                    <button type="button" onClick={onClick}>
+                    <button type="button" onClick={onClickRemovePhoto}>
                       X
                     </button>
                     <img src={elem.path || undefined}></img>
@@ -39,7 +39,7 @@ export default function Photos({
           <div>
             <label htmlFor="photos">Upload</label>
             <input
-              onChange={onChange}
+              onChange={onChangeSetPhoto}
               id="photos"
               type="file"
               accept="image/png, image/jpeg, image/jpg"

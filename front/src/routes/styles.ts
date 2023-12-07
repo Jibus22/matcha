@@ -96,7 +96,7 @@ export const CustomForm = styled(Form)`
 
 export const RegisterForm = styled.form`
   ${myForm}
-  background-color: rgba(208, 208, 255, 0.9);
+  background-color: rgba(238, 230, 255, 0.8);
 `;
 
 export const myInputStyle = css`

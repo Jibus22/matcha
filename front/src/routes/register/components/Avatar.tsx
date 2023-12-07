@@ -2,19 +2,17 @@ import { ReactElement } from "react";
 import { Body, RegisterForm } from "../../styles";
 import { NavBtnContainer } from "../styles";
 import styled from "styled-components";
-import { IDbPhotos } from "../../../db/db";
+import { onClickChooseAvatar, usePhotos } from "../store/photos.rxjs";
 
 export default function Avatar({
   backBtn,
   nextBtn,
-  onClick,
-  photos,
 }: {
   backBtn?: ReactElement;
   nextBtn?: ReactElement;
-  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  photos: Omit<IDbPhotos, "id" | "user_id">[];
 }) {
+  const photos = usePhotos();
+
   return (
     <>
       <Body>
@@ -28,7 +26,7 @@ export default function Avatar({
                     key={idx}
                     type="button"
                     $selected={elem.isAvatar === true}
-                    onClick={onClick}
+                    onClick={onClickChooseAvatar}
                   >
                     <img src={elem.path || undefined}></img>
                   </PhotoPreview>

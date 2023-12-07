@@ -35,8 +35,8 @@ export const apiSignin = import.meta.env.VITE_STATIC_GH_PAGE
 
       if (!session) return { err: err };
 
-      document.cookie = `matcha_sid=${session.sid}; SameSite=strict;`;
-      document.cookie = `matcha_uid=${session.uid}; SameSite=strict;`;
+      document.cookie = `matcha_sid=${session.sid}; SameSite=strict; Path=/;`;
+      document.cookie = `matcha_uid=${session.uid}; SameSite=strict; Path=/;`;
 
       return { registered: isProfileFull(user) };
     }
@@ -66,8 +66,8 @@ export const apiSignout = import.meta.env.VITE_STATIC_GH_PAGE
 
       Session.remove(parseInt(id));
 
-      document.cookie = `matcha_sid=; SameSite=strict;`;
-      document.cookie = `matcha_uid=; SameSite=strict;`;
+      document.cookie = `matcha_sid=; SameSite=strict; Path=/;`;
+      document.cookie = `matcha_uid=; SameSite=strict; Path=/;`;
     }
   : () => {
       // requete API fetch(POST, "/api/signout", {});

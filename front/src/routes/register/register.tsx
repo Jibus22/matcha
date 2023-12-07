@@ -1,19 +1,21 @@
-import { Form, Outlet, redirect, useLoaderData } from "react-router-dom";
+import { Form, Outlet, redirect } from "react-router-dom";
 import { GlobalStyle } from "../../style/global-style";
 import { Header, PageContent } from "../styles";
 import { apiGetUser } from "../../controllers/user";
 import { apiSignout } from "../../controllers/auth";
 import { isProfileFull } from "../../controllers/utils";
-import { IFullUser } from "../../models/user";
+import { updateUser } from "../../store/user.rxjs";
 
 export async function loader() {
   const user = await apiGetUser();
 
   if (!user) return redirect("/auth");
 
+  updateUser(user);
+
   if (isProfileFull(user)) return redirect("/");
 
-  return user;
+  return null;
 }
 
 export async function action() {
@@ -22,8 +24,6 @@ export async function action() {
 }
 
 export default function Register() {
-  const user = useLoaderData() as IFullUser;
-
   return (
     <>
       <GlobalStyle />
@@ -33,7 +33,7 @@ export default function Register() {
         </Form>
       </Header>
       <PageContent>
-        <Outlet context={user} />
+        <Outlet />
       </PageContent>
     </>
   );

@@ -12,9 +12,11 @@ describe("Registration flow", () => {
     cy.focused().type(`${this.user.email}{enter}`);
     cy.focused().type(`${this.user.username}{enter}`);
     cy.focused().type(`${this.user.password}{enter}`);
+    cy.wait(1000);
     cy.url().should("contain", "/auth/signin");
     cy.focused().type(`${this.user.username}{enter}`);
     cy.focused().type(`${this.user.password}{enter}`);
+    cy.wait(1000);
     cy.url().should("include", "/register");
   });
 

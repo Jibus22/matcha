@@ -2,20 +2,21 @@ import { ReactElement } from "react";
 import { Body, FormStyleInput, RegisterForm } from "../../styles";
 import { NavBtnContainer } from "../styles";
 import styled from "styled-components";
+import {
+  onClickDeleteInterest,
+  onInterestKeyUp,
+  useInterests,
+} from "../store/interests.rxjs";
 
 export default function Interests({
   backBtn,
   nextBtn,
-  onKeyUp,
-  onClick,
-  interests,
 }: {
   backBtn?: ReactElement;
   nextBtn?: ReactElement;
-  onKeyUp: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  interests: Set<string>;
 }) {
+  const interests = useInterests();
+
   return (
     <>
       <Body>
@@ -26,7 +27,7 @@ export default function Interests({
               {[...interests].map((elem, idx) => {
                 return (
                   <InterestCard key={idx}>
-                    <button type="button" onClick={onClick}>
+                    <button type="button" onClick={onClickDeleteInterest}>
                       X
                     </button>
                     <p>{elem}</p>
@@ -40,7 +41,7 @@ export default function Interests({
               Hit enter when you finished typing
             </label>
             <FormStyleInput
-              onKeyUp={onKeyUp}
+              onKeyUp={onInterestKeyUp}
               type="text"
               id="interests"
               name="interests"

@@ -7,11 +7,11 @@ export interface IDbUser {
   email: string;
   password: string;
   username: string;
-  gender: "male" | "female" | null;
-  sexual_preference: "homosexual" | "heterosexual" | "bisexual" | null;
-  biography: string | null;
-  age: string | null;
-  fame_rating: number | null;
+  gender: "male" | "female" | "";
+  sexual_preference: "homosexual" | "heterosexual" | "bisexual" | "";
+  biography: string;
+  age: string;
+  fame_rating: number;
 }
 
 export interface IDbPhotos {

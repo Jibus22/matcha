@@ -1,51 +1,21 @@
 import { ReactElement } from "react";
 import { Body, RegisterButton } from "../../styles";
-import { IFullUser } from "../../../models/user";
 import styled from "styled-components";
 import { useSubmit } from "react-router-dom";
 import UserProfileCard from "../../../components/UserProfileCard";
-import { IDbPhotos } from "../../../db/db";
+import { getUser } from "../../../store/user.rxjs";
 
-export default function Validation({
-  backBtn,
-  age,
-  gender,
-  sexPreference,
-  biography,
-  interests,
-  photos,
-  user,
-}: {
-  backBtn?: ReactElement;
-  age: string;
-  gender: "male" | "female";
-  sexPreference: Set<string>;
-  biography: string;
-  interests: Set<string>;
-  photos: Omit<IDbPhotos, "id" | "user_id">[];
-  user: IFullUser;
-}) {
+export default function Validation({ backBtn }: { backBtn?: ReactElement }) {
   const submit = useSubmit();
-  const sexPref =
-    sexPreference.size === 1
-      ? [...sexPreference][0] === gender
-        ? "homosexual"
-        : "heterosexual"
-      : "bisexual";
+  const user = getUser();
   const sendData = () => {
     let formData = new FormData();
-    formData.append("age", age);
-    formData.append("gender", gender);
-    formData.append("sexual_preference", sexPref);
-    formData.append("biography", biography);
-    [...interests].forEach((elem) => formData.append("interests", elem));
-
-    const orderedPhotos = [
-      photos.find((photo) => photo.isAvatar === true),
-      ...photos.filter((photo) => photo.isAvatar === false),
-    ];
-
-    orderedPhotos.forEach((elem) => {
+    formData.append("age", user.age);
+    formData.append("gender", user.gender);
+    formData.append("sexual_preference", user.sexual_preference);
+    formData.append("biography", user.biography);
+    [...user.interests].forEach((elem) => formData.append("interests", elem));
+    user.photos.forEach((elem) => {
       if (elem && elem.photo) formData.append("photos", elem.photo);
     });
 
@@ -57,17 +27,7 @@ export default function Validation({
       <Body>
         <h2>Validation</h2>
         <CardCtnr>
-          <UserProfileCard
-            user={{
-              ...user,
-              biography,
-              age,
-              gender,
-              sexual_preference: sexPref,
-              interests: [...interests],
-              photos: photos,
-            }}
-          ></UserProfileCard>
+          <UserProfileCard user={user}></UserProfileCard>
         </CardCtnr>
         {backBtn && backBtn}
         <RegisterButton type="button" onClick={sendData}>

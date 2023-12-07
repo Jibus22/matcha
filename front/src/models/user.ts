@@ -22,11 +22,11 @@ export const signUpCreate = async (
     email,
     password,
     username,
-    gender: null,
-    sexual_preference: null,
-    biography: null,
-    age: null,
-    fame_rating: null,
+    gender: "",
+    sexual_preference: "",
+    biography: "",
+    age: "",
+    fame_rating: 5,
   });
 
   return idUser;
