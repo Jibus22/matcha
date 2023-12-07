@@ -1,42 +1,47 @@
 import { ReactElement } from "react";
 import { Body, RegisterForm, boxStyle, myInputStyle } from "../../styles";
 import styled from "styled-components";
+import { NavBtnContainer } from "../styles";
+import { onGenderChange, useGender } from "../store/gender.rxjs";
 
 export default function Gender({
-  onChange,
+  backBtn,
   nextBtn,
-  gender,
 }: {
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  backBtn?: ReactElement;
   nextBtn?: ReactElement;
-  gender: string;
 }) {
+  const gender = useGender();
+
   return (
     <>
       <Body>
         <h2>Select your gender</h2>
         <RegisterForm>
           <FormStyleRadio
-            onChange={onChange}
+            onChange={onGenderChange}
             type="radio"
             id="female"
             value="female"
             name="gender"
-            defaultChecked={gender.length ? true : false}
+            defaultChecked={gender === "female" ? true : false}
             required
           ></FormStyleRadio>
           <label htmlFor="female">female</label>
           <FormStyleRadio
-            onChange={onChange}
+            onChange={onGenderChange}
             type="radio"
             id="male"
             value="male"
             name="gender"
-            defaultChecked={gender.length ? true : false}
+            defaultChecked={gender === "male" ? true : false}
             required
           ></FormStyleRadio>
           <label htmlFor="male">male</label>
-          {gender.length > 0 && nextBtn && nextBtn}
+          <NavBtnContainer>
+            <div>{backBtn && backBtn}</div>
+            <div>{gender?.length > 0 && nextBtn && nextBtn}</div>
+          </NavBtnContainer>
         </RegisterForm>
       </Body>
     </>

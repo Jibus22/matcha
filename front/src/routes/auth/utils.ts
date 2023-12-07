@@ -6,7 +6,7 @@ const lastnameRegex = /^([a-z]+( *[a-z]+){0,2}){3,20}$/i;
 
 export const mailRegexPattern = "^\\w+([-.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+$";
 export const passwordRegexPattern =
-  "^([\\w\\d.,#!?$%^&*;:\"'{}/\\=`~()-<>]{7,50})$";
+  "^([\\w\\d.,#!?$%^&*;:\"'=`~\\-\\(\\)\\{\\}<>\\/\\\\]{7,50})$";
 export const usernameRegexPattern = "^[a-zA-Z]+(-[a-zA-Z]+$)?";
 export const firstnameRegexPattern = "^[a-zA-Z-]{2,30}$";
 export const lastnameRegexPattern = "^([a-zA-Z]+( *[a-zA-Z]+){0,2}){3,20}$";

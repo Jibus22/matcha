@@ -2,20 +2,21 @@ import { ReactElement } from "react";
 import { Body, FormStyleInput, RegisterForm } from "../../styles";
 import { NavBtnContainer } from "../styles";
 import styled from "styled-components";
+import {
+  onClickDeleteInterest,
+  onInterestKeyUp,
+  useInterests,
+} from "../store/interests.rxjs";
 
 export default function Interests({
   backBtn,
   nextBtn,
-  onKeyUp,
-  onClick,
-  interests,
 }: {
   backBtn?: ReactElement;
   nextBtn?: ReactElement;
-  onKeyUp: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  interests: Set<string>;
 }) {
+  const interests = useInterests();
+
   return (
     <>
       <Body>
@@ -26,7 +27,7 @@ export default function Interests({
               {[...interests].map((elem, idx) => {
                 return (
                   <InterestCard key={idx}>
-                    <button type="button" onClick={onClick}>
+                    <button type="button" onClick={onClickDeleteInterest}>
                       X
                     </button>
                     <p>{elem}</p>
@@ -40,7 +41,8 @@ export default function Interests({
               Hit enter when you finished typing
             </label>
             <FormStyleInput
-              onKeyUp={onKeyUp}
+              onKeyUp={onInterestKeyUp}
+              type="text"
               id="interests"
               name="interests"
               placeholder="court hunting, weightlifting, tuning..."
@@ -80,8 +82,12 @@ const InterestCard = styled.div`
   align-items: center;
   padding-left: 25px;
   border-radius: 0.5rem;
-  background-color: rgba(230, 200, 200, 0.2);
+  background-color: rgba(230, 230, 230, 0.4);
   box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.25);
+
+  > p {
+    word-break: break-word;
+  }
 
   > button {
     position: absolute;
@@ -93,6 +99,7 @@ const InterestCard = styled.div`
     height: 20px;
     border-radius: 20px;
   }
+
   > button:hover {
     cursor: pointer;
   }

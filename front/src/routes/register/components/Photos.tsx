@@ -2,20 +2,21 @@ import { ReactElement } from "react";
 import { Body, RegisterForm } from "../../styles";
 import { NavBtnContainer } from "../styles";
 import styled from "styled-components";
+import {
+  onChangeSetPhoto,
+  onClickRemovePhoto,
+  usePhotos,
+} from "../store/photos.rxjs";
 
 export default function Photos({
   backBtn,
   nextBtn,
-  onChange,
-  onClick,
-  photos,
 }: {
   backBtn?: ReactElement;
   nextBtn?: ReactElement;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  photos: Array<{ file: File; url: string }>;
 }) {
+  const photos = usePhotos();
+
   return (
     <>
       <Body>
@@ -26,10 +27,10 @@ export default function Photos({
               {photos.map((elem, idx) => {
                 return (
                   <PhotoPreview key={idx}>
-                    <button type="button" onClick={onClick}>
+                    <button type="button" onClick={onClickRemovePhoto}>
                       X
                     </button>
-                    <img src={elem.url}></img>
+                    <img src={elem.path || undefined}></img>
                   </PhotoPreview>
                 );
               })}
@@ -38,7 +39,7 @@ export default function Photos({
           <div>
             <label htmlFor="photos">Upload</label>
             <input
-              onChange={onChange}
+              onChange={onChangeSetPhoto}
               id="photos"
               type="file"
               accept="image/png, image/jpeg, image/jpg"
@@ -56,7 +57,7 @@ export default function Photos({
 }
 
 const PhotoPrez = styled.div`
-  max-height: 800px;
+  max-height: 500px;
   overflow: scroll;
   border-radius: 8px;
   box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.25);

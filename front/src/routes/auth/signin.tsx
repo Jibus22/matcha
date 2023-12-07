@@ -9,7 +9,6 @@ import {
   ISigninFormErrors,
   isInstanceOfISigninFormErrors,
   isInstanceOfISigninInput,
-  passwordRegexPattern,
   signinSanitize,
   usernameRegexPattern,
 } from "./utils";
@@ -45,7 +44,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (err.length > 0) return errors;
 
-  const apiResponse = apiSignin(inputs);
+  const apiResponse = await apiSignin(inputs);
 
   if (apiResponse?.err) return apiResponse?.err;
 
@@ -75,6 +74,7 @@ export default function Signin() {
             maxLength={15}
             pattern={usernameRegexPattern}
             title="4 to 15 characters [a-z] and one surrounded dash allowed"
+            autoFocus
             required
           ></FormStyleInput>
           {errors?.username && <FormError>{errors.username}</FormError>}
@@ -86,7 +86,6 @@ export default function Signin() {
             placeholder="password"
             minLength={7}
             maxLength={50}
-            pattern={passwordRegexPattern}
             title="7 to 50 alphanumeric and special characters allowed"
             required
           ></FormStyleInput>

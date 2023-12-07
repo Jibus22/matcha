@@ -10,12 +10,9 @@ import {
 import { ActionFunctionArgs, redirect, useActionData } from "react-router-dom";
 import {
   ISignupFormErrors,
-  firstnameRegexPattern,
   isInstanceOfISignupFormErrors,
   isInstanceOfISignupInput,
   lastnameRegexPattern,
-  mailRegexPattern,
-  passwordRegexPattern,
   signupSanitize,
   usernameRegexPattern,
 } from "./utils";
@@ -46,7 +43,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (err.length > 0) return errors;
 
-  const apiResponse = apiSignup(inputs);
+  const apiResponse = await apiSignup(inputs);
 
   if (apiResponse) return apiResponse;
 
@@ -73,8 +70,10 @@ export default function Signup() {
               id="firstname"
               name="firstname"
               placeholder="firstname"
-              pattern={firstnameRegexPattern}
+              minLength={2}
+              maxLength={30}
               title="firstname must contains between 2 and 30 alphabetical characters"
+              autoFocus
               required
             ></FormStyleInput>
             {errors?.firstname && <FormError>{errors.firstname}</FormError>}
@@ -87,6 +86,8 @@ export default function Signup() {
               name="lastname"
               placeholder="lastname"
               pattern={lastnameRegexPattern}
+              minLength={3}
+              maxLength={20}
               title="lastname must contains between 3 and 20 alphabetical characters"
               required
             ></FormStyleInput>
@@ -99,7 +100,6 @@ export default function Signup() {
               id="email"
               name="email"
               placeholder="email"
-              pattern={mailRegexPattern}
               title="email must be of the form 'name@mailbox.domain'"
               required
             ></FormStyleInput>
@@ -129,7 +129,6 @@ export default function Signup() {
               placeholder="password"
               minLength={7}
               maxLength={50}
-              pattern={passwordRegexPattern}
               title="7 to 50 alphanumeric and special characters allowed"
               required
             ></FormStyleInput>

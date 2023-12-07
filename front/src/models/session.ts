@@ -1,11 +1,16 @@
-export const create = () => {
-  sessionStorage.setItem("session_id", "false_session_id_0123456789");
+import { IndexableType } from "dexie";
+import { db } from "../db/db";
+
+export const get = async (id: IndexableType) => {
+  const session = await db.session.get(id);
+  return session;
 };
 
-export const remove = () => {
-  sessionStorage.removeItem("session_id");
+export const create = async (uid: IndexableType) => {
+  const id = await db.session.add({ uid: uid, sid: self.crypto.randomUUID() });
+  return await get(id);
 };
 
-export const get = () => {
-  return sessionStorage.getItem("session_id");
+export const remove = async (id: IndexableType) => {
+  db.session.delete(id);
 };

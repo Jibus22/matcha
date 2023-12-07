@@ -3,13 +3,17 @@ import { GlobalStyle } from "../../style/global-style";
 import { Header, PageContent } from "../styles";
 import { apiGetUser } from "../../controllers/user";
 import { apiSignout } from "../../controllers/auth";
+import { isProfileFull } from "../../controllers/utils";
+import { updateUser } from "../../store/user.rxjs";
 
 export async function loader() {
-  const user = apiGetUser();
+  const user = await apiGetUser();
 
   if (!user) return redirect("/auth");
 
-  if (user.registered) return redirect("/");
+  updateUser(user);
+
+  if (isProfileFull(user)) return redirect("/");
 
   return null;
 }

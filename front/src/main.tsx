@@ -27,7 +27,15 @@ import Root, {
 import Index from "./routes/auth/index.tsx";
 import RegisterIndex, {
   loader as indexRegisterLoader,
+  action as indexRegisterAction,
 } from "./routes/register/index.tsx";
+import RootIndex, {
+  loader as indexRootLoader,
+  action as indexRootAction,
+} from "./routes/root/index.tsx";
+import Profile from "./routes/root/profile.tsx";
+import Stalkers from "./routes/root/stalkers.tsx";
+import Admirers from "./routes/root/admirers.tsx";
 
 const router = createBrowserRouter([
   {
@@ -79,6 +87,7 @@ const router = createBrowserRouter([
             index: true,
             element: <RegisterIndex />,
             loader: indexRegisterLoader,
+            action: indexRegisterAction,
           },
         ],
       },
@@ -93,7 +102,26 @@ const router = createBrowserRouter([
     children: [
       {
         errorElement: <ChildrenErrorPage />,
-        children: [{}],
+        children: [
+          {
+            index: true,
+            element: <RootIndex />,
+            loader: indexRootLoader,
+            action: indexRootAction,
+          },
+          {
+            path: "profile",
+            element: <Profile />,
+          },
+          {
+            path: "stalkers",
+            element: <Stalkers />,
+          },
+          {
+            path: "admirers",
+            element: <Admirers />,
+          },
+        ],
       },
     ],
   },

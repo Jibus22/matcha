@@ -2,25 +2,27 @@ import { ReactElement } from "react";
 import { Body, RegisterForm, boxStyle, myInputStyle } from "../../styles";
 import { NavBtnContainer } from "../styles";
 import styled from "styled-components";
+import {
+  onSexPreferencesChange,
+  useSexPreference,
+} from "../store/sexPreference.rxjs";
 
 export default function SexualPreferences({
   backBtn,
   nextBtn,
-  onChange,
-  sexPreference,
 }: {
   backBtn?: ReactElement;
   nextBtn?: ReactElement;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  sexPreference: Set<string>;
 }) {
+  const sexPreference = useSexPreference();
+
   return (
     <>
       <Body>
         <h2>Select your sexual preferences</h2>
         <RegisterForm>
           <FormStyleCheckbox
-            onChange={onChange}
+            onChange={onSexPreferencesChange}
             type="checkbox"
             id="female"
             value="female"
@@ -29,7 +31,7 @@ export default function SexualPreferences({
           ></FormStyleCheckbox>
           <label htmlFor="female">female</label>
           <FormStyleCheckbox
-            onChange={onChange}
+            onChange={onSexPreferencesChange}
             type="checkbox"
             id="male"
             value="male"
