@@ -94,6 +94,7 @@ export const CustomForm = styled(Form)`
   }
 `;
 
+// TODO: '(Form)' instead of '.form' ?
 export const RegisterForm = styled.form`
   ${myForm}
   background-color: rgba(238, 230, 255, 0.8);

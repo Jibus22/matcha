@@ -1,30 +1,47 @@
 import { IDbPhotos } from "../db/db";
 import * as User from "../models/user";
 import { getCookie, isProfileFull } from "./utils";
-import { IndexableType } from "dexie";
 
-export const apiGetUsers = async (): Promise<(User.IFullUser | null)[]> => {
-  const users = await User.findAll();
-  return users;
-};
-
-export const apiGetUser = async (): Promise<User.IFullUser | null> => {
+export const apiGetMe = async (): Promise<User.IFullUser | null> => {
   const id = getCookie("matcha_uid");
   if (!id) return null;
   const user = await User.findById(parseInt(id));
   return user;
 };
 
+export const apiGetUserByUsername = async (
+  username: string
+): Promise<User.IFullUser | null> => {
+  const user = await User.findByUsername(username);
+  return user;
+};
+
+export const apiGetInterestingUsers = async () => {
+  const me = await apiGetMe();
+
+  if (!me) return null;
+
+  const users = await User.findAllInteresting(me);
+
+  return users;
+};
+
+export const apiGetUsers = async (): Promise<(User.IFullUser | null)[]> => {
+  const users = await User.findAll();
+  return users;
+};
+
 export const apiGetUserRegistration = async () => {
-  const user = await apiGetUser();
+  const user = await apiGetMe();
   return user ? { registered: isProfileFull(user) } : null;
 };
 
-export const apiRegisterUserProfile = async (
-  form: FormData,
-  id: IndexableType
-) => {
+export const apiRegisterUserProfile = async (form: FormData) => {
   // For backend, sanitize input but for this static version it doesn't matter.
+  let id: string | number | null = getCookie("matcha_uid");
+  if (!id) return { err: "id not found" };
+  else id = parseInt(id);
+
   const sanitize = true;
   let photos: Omit<IDbPhotos, "id" | "user_id">[] = [];
   let userProfile: Partial<
@@ -41,7 +58,6 @@ export const apiRegisterUserProfile = async (
 
   // true sanitation should return which param is wrong to display correct view
   if (!sanitize) return { err: "biography" };
-  if (id === -1) return { err: "id not found" };
 
   for (let [key, value] of form) {
     if (key === "age" && typeof value === "string") userProfile.age = value;

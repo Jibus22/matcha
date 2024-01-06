@@ -3,21 +3,25 @@ import { Body, RegisterButton } from "../../styles";
 import styled from "styled-components";
 import { useSubmit } from "react-router-dom";
 import UserProfileCard from "../../../components/UserProfileCard";
-import { getUser } from "../../../store/user.rxjs";
+import { useUser } from "../../../store/user.rxjs";
 
 export default function Validation({ backBtn }: { backBtn?: ReactElement }) {
   const submit = useSubmit();
-  const user = getUser();
+  const user = useUser();
   const sendData = () => {
     let formData = new FormData();
     formData.append("age", user.age);
     formData.append("gender", user.gender);
     formData.append("sexual_preference", user.sexual_preference);
     formData.append("biography", user.biography);
-    [...user.interests].forEach((elem) => formData.append("interests", elem));
-    user.photos.forEach((elem) => {
-      if (elem && elem.photo) formData.append("photos", elem.photo);
-    });
+
+    if (user.interests && user.interests.length > 0)
+      [...user.interests].forEach((elem) => formData.append("interests", elem));
+
+    if (user.photos && user.photos.length > 0)
+      user.photos.forEach((elem) => {
+        if (elem && elem.photo) formData.append("photos", elem.photo);
+      });
 
     submit(formData, { method: "post", encType: "multipart/form-data" });
   };

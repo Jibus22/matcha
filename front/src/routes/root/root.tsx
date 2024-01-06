@@ -1,15 +1,28 @@
-import { Form, Link, Outlet, redirect, useLoaderData } from "react-router-dom";
+import {
+  Form,
+  Link,
+  Outlet,
+  redirect,
+  useLoaderData,
+  useLocation,
+} from "react-router-dom";
 import { GlobalStyle } from "../../style/global-style";
 import { HeaderRoot, PageContentRoot } from "../styles";
-import { apiGetUser } from "../../controllers/user";
+import { apiGetInterestingUsers, apiGetMe } from "../../controllers/user";
 import { apiSignout } from "../../controllers/auth";
 import { isProfileFull } from "../../controllers/utils";
 import { IFullUser } from "../../models/user";
 import styled from "styled-components";
 import { indexedDBPopulate } from "../../mockdata/mockingFactory";
+import { updateUser } from "../../store/user.rxjs";
+import { updateUsers } from "../../store/users.rxjs";
+import {
+  toggleFilterWindow,
+  toggleSortingWindow,
+} from "./store/rootOptionsButtons.rxjs";
 
 export async function loader() {
-  const user = await apiGetUser();
+  const user = await apiGetMe();
 
   if (!user) return redirect("/auth");
 
@@ -17,7 +30,9 @@ export async function loader() {
 
   await indexedDBPopulate(); // If user's indexedDB is empty, populate it
 
-  return user;
+  const users = await apiGetInterestingUsers();
+
+  return [users, user];
 }
 
 export async function action() {
@@ -26,7 +41,10 @@ export async function action() {
 }
 
 export default function Root() {
-  const user = useLoaderData() as IFullUser;
+  const [users, user] = useLoaderData() as [IFullUser[], IFullUser];
+  const location = useLocation();
+  updateUser(user);
+  updateUsers(users);
 
   return (
     <>
@@ -42,14 +60,42 @@ export default function Root() {
           <Link to="admirers">admirers</Link>
           <Link to="stalkers">stalkers</Link>
           <Link to="profile">profile</Link>
+          {location.pathname === "/" && (
+            <RootOptions>
+              <RootOptionsBtn onClick={toggleSortingWindow}>
+                Sort
+              </RootOptionsBtn>
+              <RootOptionsBtn onClick={toggleFilterWindow}>
+                Filter
+              </RootOptionsBtn>
+            </RootOptions>
+          )}
         </SideNav>
         <MainElement>
-          <Outlet context={user} />
+          <Outlet />
         </MainElement>
       </PageContentRoot>
     </>
   );
 }
+const RootOptions = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 20px 0px;
+`;
+const RootOptionsBtn = styled.button`
+  padding: 0.3em;
+  border-radius: 10px;
+  border: none;
+  background: rgb(238, 179, 255);
+  font-weight: 300;
+  color: rgb(108, 84, 115);
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
 
 const SideNav = styled.nav`
   display: flex;
@@ -76,4 +122,5 @@ const MainElement = styled.div`
   border: 1px solid black;
   overflow: scroll;
   height: calc(100vh - 60px);
+  position: relative;
 `;

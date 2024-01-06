@@ -12,7 +12,6 @@ import Avatar from "./components/Avatar";
 import Validation from "./components/Validation";
 import { redirect, useActionData } from "react-router-dom";
 import Age from "./components/Age";
-import { getUser } from "../../store/user.rxjs";
 
 export async function loader() {
   return null;
@@ -20,13 +19,7 @@ export async function loader() {
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
-  const user = getUser();
-  console.log("action register index");
-  console.log(formData);
-  console.log("user:");
-  console.log(user);
-
-  const apiResponse = await apiRegisterUserProfile(formData, user?.id || -1);
+  const apiResponse = await apiRegisterUserProfile(formData);
 
   if (apiResponse?.err) return apiResponse?.err;
 

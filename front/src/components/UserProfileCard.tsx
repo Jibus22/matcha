@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 import { useMemo, useState } from "react";
 import { IFullUser } from "../models/user";
+import { calculateUserAge, isMobileDevice } from "../utils/utils";
 
 export default function UserProfileCard({ user }: { user: IFullUser }) {
   const [index, setIndex] = useState(0);
@@ -41,14 +42,6 @@ export default function UserProfileCard({ user }: { user: IFullUser }) {
     </ButtonRight>
   );
 
-  const birthDate = new Date(user.age || "");
-  const nowDate = new Date();
-  const monthDiff = nowDate.getMonth() - birthDate.getMonth();
-  const dayDiff = nowDate.getDate() - birthDate.getDate();
-  let age = nowDate.getFullYear() - birthDate.getFullYear();
-
-  if (monthDiff < 0 || (monthDiff == 0 && dayDiff < 0)) age -= 1;
-
   return (
     <>
       {overlay && (
@@ -87,12 +80,12 @@ export default function UserProfileCard({ user }: { user: IFullUser }) {
               <ProfileName>
                 {user.firstname} {user.lastname}
               </ProfileName>
-              {user.gender?.match(/$male^/) ? (
-                <ProfileGender>&#9792;</ProfileGender>
-              ) : (
+              {user.gender?.match(/^male$/) ? (
                 <ProfileGender>&#9794;</ProfileGender>
+              ) : (
+                <ProfileGender>&#9792;</ProfileGender>
               )}
-              <ProfileAge>{age}</ProfileAge>
+              <ProfileAge>{calculateUserAge(user)}</ProfileAge>
               <ProfileSexPref>{user.sexual_preference}</ProfileSexPref>
             </Infos>
             <DisplayBiography>{user?.biography}</DisplayBiography>
@@ -105,18 +98,6 @@ export default function UserProfileCard({ user }: { user: IFullUser }) {
         </Card>
       )}
     </>
-  );
-}
-
-function isMobileDevice() {
-  return (
-    (navigator.userAgent.match(/iPhone/i) ||
-      navigator.userAgent.match(/webOS/i) ||
-      navigator.userAgent.match(/Android/i) ||
-      navigator.userAgent.match(/iPad/i) ||
-      navigator.userAgent.match(/iPod/i) ||
-      navigator.userAgent.match(/BlackBerry/i) ||
-      navigator.userAgent.match(/Windows Phone/i)) !== null
   );
 }
 

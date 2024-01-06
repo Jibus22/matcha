@@ -30,12 +30,15 @@ import RegisterIndex, {
   action as indexRegisterAction,
 } from "./routes/register/index.tsx";
 import RootIndex, {
-  loader as indexRootLoader,
   action as indexRootAction,
+  loader as indexRootLoader,
 } from "./routes/root/index.tsx";
 import Profile from "./routes/root/profile.tsx";
 import Stalkers from "./routes/root/stalkers.tsx";
 import Admirers from "./routes/root/admirers.tsx";
+import OtherProfile, {
+  loader as otherProfileLoader,
+} from "./routes/root/OtherProfile.tsx";
 
 const router = createBrowserRouter([
   {
@@ -106,8 +109,8 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <RootIndex />,
-            loader: indexRootLoader,
             action: indexRootAction,
+            loader: indexRootLoader,
           },
           {
             path: "profile",
@@ -120,6 +123,11 @@ const router = createBrowserRouter([
           {
             path: "admirers",
             element: <Admirers />,
+          },
+          {
+            path: ":username",
+            element: <OtherProfile />,
+            loader: otherProfileLoader,
           },
         ],
       },

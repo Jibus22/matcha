@@ -2,10 +2,26 @@ import { IndexableType } from "dexie";
 import { IDbPhotos, IDbUser, db } from "../db/db";
 import * as Interests from "./interests";
 import * as Photos from "./photos";
+import { calculateUserAge } from "../utils/utils";
 
 export interface IFullUser extends IDbUser {
   interests?: string[];
   photos?: Omit<IDbPhotos, "id" | "user_id">[];
+}
+
+export class FullUser implements IFullUser {
+  firstname = "";
+  lastname = "";
+  email = "";
+  password = "";
+  username = "";
+  gender = "" as "" | "female" | "male";
+  sexual_preference = "" as "" | "homosexual" | "heterosexual" | "bisexual";
+  biography = "";
+  age = "";
+  fame_rating = 5;
+  interests = [];
+  photos = [];
 }
 
 export const signUpCreate = async (
@@ -92,7 +108,15 @@ const userJoinTables = async (user: IDbUser) => {
     Photos.findByUserId(user.id),
   ]);
 
-  return { ...user, interests: interests, photos: photos };
+  return {
+    ...user,
+    interests: interests,
+    photos: photos.map((elem, idx) => {
+      if (idx === 0) elem.isAvatar = true;
+      else elem.isAvatar = false;
+      return elem;
+    }),
+  };
 };
 
 export const findByUsername = async (
@@ -104,9 +128,10 @@ export const findByUsername = async (
   return fullUser;
 };
 
-export const findAll = async () => {
-  const users = await db.user.toArray();
-  const fullUsers = await Promise.all(
+const getCompleteUser = async (
+  users: IFullUser[]
+): Promise<(IFullUser | null)[]> => {
+  const completedUsers = await Promise.all(
     users.map(async (user) => {
       const fullUser = await userJoinTables((user && user) || null);
       if (!fullUser) return null;
@@ -114,5 +139,52 @@ export const findAll = async () => {
       return rest;
     })
   );
-  return fullUsers.filter((user) => user !== null);
+  return completedUsers;
+};
+
+export const findAll = async () => {
+  const users = await db.user.toArray();
+  const completedUsers = await getCompleteUser(users);
+
+  return completedUsers.filter((user) => user !== null);
+};
+
+const getUserGenderPreference = (user: IFullUser) => {
+  return ["female", "male"].filter(
+    (elem) =>
+      user.sexual_preference === "bisexual" ||
+      (user.sexual_preference === "homosexual" && elem === user.gender) ||
+      (user.sexual_preference === "heterosexual" && elem !== user.gender)
+  );
+};
+
+export const findAllInteresting = async (me: IFullUser) => {
+  const myAge = calculateUserAge(me);
+  const myGenderPref = getUserGenderPreference(me);
+
+  const users = await db.user
+    .where("username")
+    .notEqual(me.username)
+    .filter((user) => {
+      const diff = calculateUserAge(user) - myAge;
+      const userGenderPref = getUserGenderPreference(user);
+
+      return (
+        Math.abs(diff) <= 5 &&
+        myGenderPref.includes(user.gender) &&
+        userGenderPref.includes(me.gender)
+      );
+    })
+    .toArray();
+
+  const completedUsers = await getCompleteUser(users);
+  const filteredUsers = completedUsers
+    .filter((user) => user !== null)
+    .map((user) => {
+      if (!user) return null;
+      const { firstname, lastname, email, password, biography, ...rest } = user;
+      return rest;
+    });
+
+  return filteredUsers;
 };

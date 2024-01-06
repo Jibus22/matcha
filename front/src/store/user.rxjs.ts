@@ -6,9 +6,9 @@ import { sexPreference$ } from "../routes/register/store/sexPreference.rxjs";
 import { birthdate$ } from "../routes/register/store/birthdate.rxjs";
 import { interests$ } from "../routes/register/store/interests.rxjs";
 import { photos$ } from "../routes/register/store/photos.rxjs";
-import { IndexableType } from "dexie";
+import { useEffect, useState } from "react";
 
-let user: Omit<Required<IFullUser>, "id"> & { id?: IndexableType } = {
+let user: IFullUser = {
   firstname: "",
   lastname: "",
   email: "",
@@ -25,13 +25,11 @@ let user: Omit<Required<IFullUser>, "id"> & { id?: IndexableType } = {
 
 export const user$ = new BehaviorSubject<IFullUser>(user);
 
-export const getUser = () => {
-  return { ...user };
-};
-
 export const updateUser = (userUp: Partial<IFullUser>) => {
-  user = { ...user, ...userUp };
-  user$.next(user);
+  useEffect(() => {
+    user = { ...user, ...userUp };
+    user$.next(user);
+  }, [user$]);
 };
 
 birthdate$.subscribe((newBd) => {
@@ -81,3 +79,17 @@ photos$
     user.photos = photos;
     user$.next(user);
   });
+
+export const useUser = () => {
+  const [newUser, setNewUser] = useState(user);
+
+  useEffect(() => {
+    const sub = user$.subscribe((usr) => {
+      setNewUser({ ...usr });
+    });
+
+    return sub.unsubscribe();
+  }, [user$]);
+
+  return newUser;
+};

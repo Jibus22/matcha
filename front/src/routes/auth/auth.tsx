@@ -1,11 +1,11 @@
 import { Link, Outlet, redirect } from "react-router-dom";
 import { GlobalStyle } from "../../style/global-style";
 import { Header, PageContent } from "../styles";
-import { apiGetUser } from "../../controllers/user";
+import { apiGetMe } from "../../controllers/user";
 import { isProfileFull } from "../../controllers/utils";
 
 export async function loader() {
-  const user = await apiGetUser();
+  const user = await apiGetMe();
 
   if (user) return redirect(isProfileFull(user) ? "/" : "/register");
 
