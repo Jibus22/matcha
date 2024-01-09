@@ -3,7 +3,6 @@ import {
   Form,
   Link,
   LoaderFunctionArgs,
-  useSubmit,
 } from "react-router-dom";
 import { useUsers } from "../../store/users.rxjs";
 import { IFullUser } from "../../models/user";
@@ -14,11 +13,10 @@ import {
   useOpenFilter,
   useOpenSorting,
 } from "./store/rootOptionsButtons.rxjs";
-import { onChangeSetPhoto } from "../register/store/photos.rxjs";
-import { useState } from "react";
+import { updateSortOption, useSortOption } from "./store/sortOptions.rxjs";
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  console.log("Yeeahyeah");
+  console.log("RootIndex Loader");
   return null;
 }
 
@@ -29,6 +27,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function RootIndex() {
   const users = useUsers();
+
   return (
     <>
       <RootBody>
@@ -121,10 +120,7 @@ const OptionWindowBtn = styled.button`
 `;
 
 function SortList() {
-  const [val, setVal] = useState("none");
-  const submit = useSubmit();
-
-  console.log(val);
+  const option = useSortOption();
 
   return (
     <>
@@ -135,10 +131,8 @@ function SortList() {
           id="none"
           value="none"
           name="none"
-          checked={val === "none"}
-          onChange={(e) => {
-            setVal(`${e.currentTarget.value}`);
-          }}
+          checked={option === "none"}
+          onChange={updateSortOption}
         />
         <SortLabel htmlFor="none">none</SortLabel>
         <SortInput
@@ -146,10 +140,8 @@ function SortList() {
           id="age"
           value="age"
           name="age"
-          checked={val === "age"}
-          onChange={(e) => {
-            setVal(`${e.currentTarget.value}`);
-          }}
+          checked={option === "age"}
+          onChange={updateSortOption}
         />
         <SortLabel htmlFor="age">age</SortLabel>
         <SortInput
@@ -157,10 +149,8 @@ function SortList() {
           id="tags"
           value="tags"
           name="tags"
-          checked={val === "tags"}
-          onChange={(e) => {
-            setVal(`${e.currentTarget.value}`);
-          }}
+          checked={option === "tags"}
+          onChange={updateSortOption}
         />
         <SortLabel htmlFor="tags">common tags</SortLabel>
       </SortForm>

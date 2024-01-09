@@ -32,6 +32,14 @@ export const updateUser = (userUp: Partial<IFullUser>) => {
   }, [user$]);
 };
 
+/**
+ * Get the copy of user variable. Shouldn't be used in a UI element, for this
+ * case, use 'useUser' instead
+ */
+export const getUser = () => {
+  return { ...user };
+};
+
 birthdate$.subscribe((newBd) => {
   user.age = newBd;
   user$.next(user);
@@ -88,7 +96,7 @@ export const useUser = () => {
       setNewUser({ ...usr });
     });
 
-    return sub.unsubscribe();
+    return () => sub.unsubscribe();
   }, [user$]);
 
   return newUser;
