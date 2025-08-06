@@ -1,0 +1,5 @@
+(executable
+ (public_name user_service)
+ (name main)
+ (libraries user_service dream)
+ (preprocess (pps lwt_ppx)))
