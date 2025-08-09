@@ -5,11 +5,11 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github Jibus22/matcha))
 
-(authors "Author Name <author@example.com>")
+(authors "Jean-Baptiste Le Corre <jeanbaptistelecorre@example.com>")
 
-(maintainers "Maintainer Name <maintainer@example.com>")
+(maintainers "Jean-Baptiste Le Corre <jeanbaptistelecorre@example.com>")
 
 (license LICENSE)
 
@@ -17,10 +17,10 @@
 
 (package
  (name user_service)
- (synopsis "A short synopsis")
- (description "A longer description")
+ (synopsis "User service")
+ (description "api responsible of user auth and info")
  (depends ocaml (dream (>= 1.0.0~alpha8)))
  (tags
-  ("add topics" "to describe" your project)))
+  ("user" "auth")))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
