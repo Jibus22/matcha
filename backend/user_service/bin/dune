@@ -1,0 +1,6 @@
+(executable
+ (public_name user_service)
+ (name main)
+ (libraries user_service dream yojson)
+ (preprocess
+  (pps lwt_ppx)))

@@ -1,0 +1,26 @@
+(lang dune 3.19)
+
+(name user_service)
+
+(generate_opam_files true)
+
+(source
+ (github Jibus22/matcha))
+
+(authors "Jean-Baptiste Le Corre <jeanbaptistelecorre@example.com>")
+
+(maintainers "Jean-Baptiste Le Corre <jeanbaptistelecorre@example.com>")
+
+(license LICENSE)
+
+(documentation https://url/to/documentation)
+
+(package
+ (name user_service)
+ (synopsis "User service")
+ (description "api responsible of user auth and info")
+ (depends ocaml (dream (>= 1.0.0~alpha8)))
+ (tags
+  ("user" "auth")))
+
+; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
