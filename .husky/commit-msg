@@ -1,0 +1,18 @@
+# The subject must be Conventional Commits, at most 50 characters after the ticket prefix:
+# squashed, the PR title lands on main with " (#NNN)" appended, and GitHub cuts past 72.
+subject=$(head -n 1 "$1" | sed -E 's/^\[(MT-[0-9]+|WIP)\] //')
+
+# Commits made to be folded by `git rebase --autosquash`
+case "$subject" in fixup!* | squash!* | amend!*) exit 0 ;; esac
+
+types='feat|fix|chore|docs|refactor|ci|test|perf|build|style|revert'
+if ! printf '%s\n' "$subject" | grep -Eq "^($types)(\([a-z0-9-]+\))?!?: .+"; then
+  echo "✖ Subject must follow Conventional Commits: type(scope): outcome"
+  echo "  type: ${types}; scope: one service or area, optional; ! marks a breaking change"
+  exit 1
+fi
+
+if [ "${#subject}" -gt 50 ]; then
+  echo "✖ Subject is ${#subject} characters after the prefix; the cap is 50."
+  exit 1
+fi
