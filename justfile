@@ -31,3 +31,7 @@ cluster:
 # Delete the local cluster and everything in it
 down:
     k3d cluster delete {{ cluster }}
+
+# psql into the local Postgres, as the postgres superuser
+psql:
+    kubectl exec -it -n matcha matcha-pg-1 -- psql
