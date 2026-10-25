@@ -18,8 +18,12 @@ lint: fmt-check
 
 cluster := "matcha"
 
+# Create the local cluster if it's missing, then start Tilt
+up: cluster
+    tilt up
+
 # Create the local cluster if it's missing
-up:
+cluster:
     @test -n "${KUBECONFIG:-}" || { echo "KUBECONFIG is unset: run this from the direnv shell, or k3d writes ~/.kube/config"; exit 1; }
     k3d cluster list {{ cluster }} >/dev/null 2>&1 || k3d cluster create --config dev/k3d.yaml
     k3d kubeconfig merge {{ cluster }} --kubeconfig-merge-default --kubeconfig-switch-context >/dev/null
