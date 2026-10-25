@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - [Nix](https://nixos.org/download) with flakes enabled, and [direnv](https://direnv.net) with [nix-direnv](https://github.com/nix-community/nix-direnv).
-- Docker, once the local cluster lands.
+- Docker (OrbStack, Docker Desktop…), running.
 
 ## Getting started
 
@@ -13,7 +13,18 @@ pnpm install   # installs the formatters and activates the git hooks
 just           # lists the recipes
 ```
 
-Without direnv, run `nix develop` first. Run git from that shell: the hooks need its tools.
+Without direnv, run `nix develop` first and export `KUBECONFIG` as `.envrc` does. Run git from that shell: the hooks need its tools.
+
+## Local cluster
+
+```bash
+just up     # creates the k3d cluster if it's missing, then starts Tilt (http://localhost:10350)
+just psql   # psql into the local Postgres, as the superuser
+just down   # deletes the cluster and everything in it
+```
+
+- Traefik answers on http://localhost:8080.
+- `.envrc` points `KUBECONFIG` at `.direnv/kubeconfig`: inside the repo, `kubectl`, `helm` and `tilt` only see the local cluster, and `~/.kube/config` is never touched. `just up` refuses to run without it.
 
 ## The flow: one issue → one branch → one PR
 
