@@ -1,0 +1,22 @@
+# Refuse, before the round trip, what the main ruleset or review would refuse anyway.
+# stdin has one line per pushed ref: <local-ref> <local-sha> <remote-ref> <remote-sha>.
+# The remote name is judged, so `git push origin HEAD:main` from a good branch is caught too.
+. .husky/lib.sh
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$local_sha" in *[!0]*) ;; *) continue ;; esac # all zeros: a deletion
+  case "$remote_ref" in refs/heads/*) ;; *) continue ;; esac # tags & co.
+  branch=${remote_ref#refs/heads/}
+
+  if [ "$branch" = "main" ]; then
+    echo "✖ Never push to main: open a pull request."
+    exit 1
+  fi
+  if ! valid_branch "$branch"; then
+    echo "✖ Branch '$branch' doesn't follow the naming convention."
+    branch_help
+    exit 1
+  fi
+done
+
+just lint

@@ -1,0 +1,16 @@
+# Prefix the message with the branch's ticket: [MT-12], or [WIP] on an MT-xxx branch.
+# $2 is the message source; merges, squashes and amends already carry their prefix.
+case "${2:-}" in merge | squash | commit) exit 0 ;; esac
+
+branch=$(git symbolic-ref --short HEAD 2>/dev/null) || exit 0
+ticket=$(printf '%s\n' "$branch" | grep -Eo 'MT-([0-9]+|xxx)' | head -n 1)
+[ -n "$ticket" ] || exit 0
+
+case "$ticket" in
+  *xxx) prefix="[WIP]" ;;
+  *) prefix="[$ticket]" ;;
+esac
+
+case "$(head -n 1 "$1")" in "$prefix"*) exit 0 ;; esac
+msg=$(cat "$1")
+printf '%s %s\n' "$prefix" "$msg" >"$1"

@@ -1,0 +1,11 @@
+# Warn, never block: a branch with a bad name can still be worked on, but pre-push refuses it.
+# $3 is 1 for a branch checkout, 0 for a file checkout.
+[ "$3" = "1" ] || exit 0
+branch=$(git symbolic-ref --short HEAD 2>/dev/null) || exit 0
+[ "$branch" = "main" ] && exit 0
+
+. .husky/lib.sh
+if ! valid_branch "$branch"; then
+  echo "⚠ Branch '$branch' doesn't follow the naming convention; pushing it will be refused."
+  branch_help
+fi
