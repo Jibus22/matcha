@@ -26,6 +26,12 @@ just down   # deletes the cluster and everything in it
 - Traefik answers on http://localhost:8080.
 - `.envrc` points `KUBECONFIG` at `.direnv/kubeconfig`: inside the repo, `kubectl`, `helm` and `tilt` only see the local cluster, and `~/.kube/config` is never touched. `just up` refuses to run without it.
 
+## Observability
+
+- Grafana on http://localhost:3000, no login: Tempo (traces), Loki (logs) and Prometheus (metrics) are already wired in. Telemetry resets when the `otel-lgtm` pod restarts.
+- Services send OTLP to the address in `OTEL_EXPORTER_OTLP_ENDPOINT`: `http://otel-lgtm.observability:4318` in the local cluster. Never hard-code it.
+- Traefik traces every request it receives, so a request's trace starts at the edge. A new trace takes about 20 seconds to become searchable in Tempo.
+
 ## The flow: one issue → one branch → one PR
 
 `main` only changes through pull requests, squash-merged, so its history stays linear with one commit per change.
