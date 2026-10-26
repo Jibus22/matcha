@@ -20,3 +20,23 @@ local_resource(
     resource_deps=['cnpg-operator'],
     labels=['platform'],
 )
+
+# Grafana with Tempo, Loki and Prometheus behind it, and the OTLP collector services send to.
+# A plain Deployment, so Tilt reads its readiness itself.
+k8s_yaml('dev/otel-lgtm.yaml')
+k8s_resource(
+    'otel-lgtm',
+    objects=['observability:namespace'],
+    port_forwards=[port_forward(3000, 3000, name='Grafana')],
+    labels=['observability'],
+)
+
+# Traefik sends its traces and metrics to that collector, so every request's trace starts at
+# the edge.
+k8s_yaml('dev/traefik.yaml')
+k8s_resource(
+    new_name='traefik-otlp',
+    objects=['traefik:helmchartconfig'],
+    resource_deps=['otel-lgtm'],
+    labels=['observability'],
+)
