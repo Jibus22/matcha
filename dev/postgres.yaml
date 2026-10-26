@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: matcha
+---
+# One Postgres for every service; each service gets its own database and role when it lands.
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: matcha-pg
+  namespace: matcha
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgis:18.6-3.6.4-standard-trixie
+  storage:
+    size: 1Gi

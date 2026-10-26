@@ -1,0 +1,23 @@
+# The local cluster. `just up` creates it, `just down` deletes it.
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: matcha
+servers: 1
+agents: 0
+image: rancher/k3s:v1.32.5-k3s1
+ports:
+  # Traefik, the k3s ingress, on http://localhost:8080: no privileged port, so a non-root Docker works too.
+  - port: 8080:80
+    nodeFilters:
+      - loadbalancer
+registries:
+  # Tilt pushes the images it builds here; the cluster advertises it, so Tilt finds it by itself.
+  # Not 5000: macOS's AirPlay receiver holds it.
+  create:
+    name: matcha-registry
+    hostPort: "5005"
+options:
+  kubeconfig:
+    updateDefaultKubeconfig: true
+    switchCurrentContext: true
