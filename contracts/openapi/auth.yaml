@@ -377,8 +377,15 @@ components:
           type: array
           description: One entry per field that breaks its rule
           items:
-            type: object
-            required: [field, message]
-            properties:
-              field: { type: string, example: username }
-              message: { type: string }
+            $ref: "#/components/schemas/FieldError"
+
+    FieldError:
+      type: object
+      required: [field, message]
+      properties:
+        field: { type: string, example: username }
+        message:
+          {
+            type: string,
+            example: "3 to 20 characters among letters, digits, _ and .",
+          }

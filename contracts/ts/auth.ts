@@ -258,11 +258,13 @@ export interface components {
             status: number;
             detail?: string;
             /** @description One entry per field that breaks its rule */
-            errors?: {
-                /** @example username */
-                field: string;
-                message: string;
-            }[];
+            errors?: components["schemas"]["FieldError"][];
+        };
+        FieldError: {
+            /** @example username */
+            field: string;
+            /** @example 3 to 20 characters among letters, digits, _ and . */
+            message: string;
         };
     };
     responses: {

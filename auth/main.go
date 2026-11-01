@@ -35,7 +35,13 @@ func run() error {
 	}
 	defer db.Close()
 
-	srv := &http.Server{Addr: ":8080", Handler: instrument(routes()), ReadHeaderTimeout: 5 * time.Second}
+	// Routes are the full public paths (/api/auth/…): Traefik doesn't strip the prefix, so logs
+	// and traces show the URL the browser used.
+	handler, err := (&server{db: db}).routes()
+	if err != nil {
+		return err
+	}
+	srv := &http.Server{Addr: ":8080", Handler: instrument(handler), ReadHeaderTimeout: 5 * time.Second}
 	errc := make(chan error, 1)
 	go func() { errc <- srv.ListenAndServe() }()
 	slog.Info("listening", "addr", srv.Addr)
@@ -49,17 +55,4 @@ func run() error {
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	return srv.Shutdown(shutdownCtx)
-}
-
-// routes answers under the full public path: Traefik doesn't strip /api/auth, so logs and traces
-// show the URL the browser used.
-func routes() *http.ServeMux {
-	mux := http.NewServeMux()
-	mux.HandleFunc("GET /api/auth/health", health)
-	return mux
-}
-
-func health(w http.ResponseWriter, _ *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	_, _ = w.Write([]byte(`{"status":"ok"}` + "\n"))
 }
