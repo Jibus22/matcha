@@ -2,3 +2,10 @@
 image: matcha-auth
 pathPrefix: /api/auth
 healthPath: /api/auth/health
+# The standard Postgres variables: the driver reads them as they are.
+env:
+  PGHOST: matcha-pg-rw
+  PGDATABASE: auth
+  PGUSER: auth
+secretEnv:
+  PGPASSWORD: { secret: auth-db, key: password }

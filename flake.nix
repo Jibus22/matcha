@@ -31,6 +31,7 @@
             kubernetes-helm
             kubectl
             just
+            postgresql_18 # initdb and pg_ctl: tests start a throwaway Postgres, no cluster needed
           ];
           # C libraries opam compiles OCaml libraries against (caqti's Postgres driver, zarith, TLS).
           # buildInputs, not packages, so the compiler wrapper and pkg-config see their headers.
