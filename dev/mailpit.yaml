@@ -1,0 +1,45 @@
+# Local development only: Mailpit catches every email the services send (SMTP on port 1025) and
+# shows them on http://localhost:8025. Nothing leaves the laptop.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mailpit
+  namespace: matcha
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mailpit
+  template:
+    metadata:
+      labels:
+        app: mailpit
+    spec:
+      containers:
+        - name: mailpit
+          image: axllent/mailpit:v1.33.0
+          ports:
+            - name: smtp
+              containerPort: 1025
+            - name: web
+              containerPort: 8025
+          readinessProbe:
+            httpGet:
+              path: /livez
+              port: web
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mailpit
+  namespace: matcha
+spec:
+  selector:
+    app: mailpit
+  ports:
+    - name: smtp
+      port: 1025
+      targetPort: smtp
+    - name: web
+      port: 8025
+      targetPort: web

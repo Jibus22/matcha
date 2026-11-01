@@ -62,6 +62,15 @@ k8s_resource(
     labels=['observability'],
 )
 
+# Mailpit: catches the emails services send; its inbox is on http://localhost:8025.
+k8s_yaml('dev/mailpit.yaml')
+k8s_resource(
+    'mailpit',
+    port_forwards=[port_forward(8025, 8025, name='Mailpit')],
+    resource_deps=['postgres'],  # postgres creates the matcha namespace
+    labels=['platform'],
+)
+
 # auth (Go). Compiled on the Mac for Linux, then synced into the running container, which
 # restarts the program: an edit never rebuilds the image. Kubernetes can't restart one
 # container in place, hence restart_process, which wraps the program's start command.
