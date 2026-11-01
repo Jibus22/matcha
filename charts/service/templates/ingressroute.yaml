@@ -1,0 +1,15 @@
+{{- if .Values.pathPrefix }}
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  entryPoints: [web]
+  routes:
+    - match: PathPrefix(`{{ .Values.pathPrefix }}`)
+      kind: Rule
+      services:
+        - name: {{ .Release.Name }}
+          port: 80
+{{- end }}

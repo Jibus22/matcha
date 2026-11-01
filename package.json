@@ -5,7 +5,8 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "*": "prettier --write --ignore-unknown"
+    "*": "prettier --write --ignore-unknown",
+    "*.go": "gofmt -w"
   },
   "devDependencies": {
     "husky": "^9.1.7",

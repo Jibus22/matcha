@@ -1,5 +1,13 @@
 # The local dev loop. `just up` starts it; http://localhost:10350 shows it.
 
+# Tilt downloads its extensions from GitHub on first use: pin them to one commit.
+v1alpha1.extension_repo(
+    name='default',
+    url='https://github.com/tilt-dev/tilt-extensions',
+    ref='bbc1fee687523dbb2d7bd0c648d12c8a50d06ca6',
+)
+load('ext://restart_process', 'docker_build_with_restart')
+
 # The CloudNativePG operator, from its official chart. Plain helm rather than Tilt's helm
 # extension, which Tilt would download from GitHub at runtime.
 local_resource(
@@ -31,6 +39,17 @@ k8s_resource(
     labels=['observability'],
 )
 
+# Container logs: the OpenTelemetry Collector chart, one collector per node, plain helm like CNPG.
+local_resource(
+    'otel-collector',
+    cmd='helm upgrade --install otel-collector'
+    + ' oci://ghcr.io/open-telemetry/opentelemetry-helm-charts/opentelemetry-collector'
+    + ' --version 0.178.1 --namespace observability -f dev/otel-collector.yaml --wait',
+    deps=['dev/otel-collector.yaml'],
+    resource_deps=['otel-lgtm'],
+    labels=['observability'],
+)
+
 # Traefik sends its traces and metrics to that collector, so every request's trace starts at
 # the edge.
 k8s_yaml('dev/traefik.yaml')
@@ -39,4 +58,30 @@ k8s_resource(
     objects=['traefik:helmchartconfig'],
     resource_deps=['otel-lgtm'],
     labels=['observability'],
+)
+
+# auth (Go). Compiled on the Mac for Linux, then synced into the running container, which
+# restarts the program: an edit never rebuilds the image. Kubernetes can't restart one
+# container in place, hence restart_process, which wraps the program's start command.
+local_resource(
+    'auth-compile',
+    cmd='cd auth && CGO_ENABLED=0 GOOS=linux go build -o build/auth .',
+    deps=['auth'],
+    ignore=['auth/build'],
+    labels=['auth'],
+)
+docker_build_with_restart(
+    'matcha-auth',
+    'auth',
+    dockerfile_contents='FROM alpine:3.24\nCOPY build/auth /app/auth\n',
+    only=['build'],
+    entrypoint=['/app/auth'],
+    live_update=[sync('auth/build', '/app')],
+)
+k8s_yaml(helm('charts/service', name='auth', namespace='matcha', values=['auth/values.yaml']))
+k8s_resource(
+    'auth',
+    objects=['auth:ingressroute'],
+    resource_deps=['auth-compile', 'postgres'],  # postgres also creates the matcha namespace
+    labels=['auth'],
 )

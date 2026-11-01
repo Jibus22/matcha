@@ -31,6 +31,16 @@ just down   # deletes the cluster and everything in it
 - Grafana on http://localhost:3000, no login: Tempo (traces), Loki (logs) and Prometheus (metrics) are already wired in. Telemetry resets when the `otel-lgtm` pod restarts.
 - Services send OTLP to the address in `OTEL_EXPORTER_OTLP_ENDPOINT`: `http://otel-lgtm.observability:4318` in the local cluster. Never hard-code it.
 - Traefik traces every request it receives, so a request's trace starts at the edge. A new trace takes about 20 seconds to become searchable in Tempo.
+- Logs: services write JSON to stdout, with `trace_id` and `span_id` inside a request. A collector on the node sends every container's lines to Loki, where those IDs link a line to its trace.
+
+## Services
+
+Each service lives in its own folder (`auth/`…) and is deployed with the shared chart in `charts/service`: a Deployment, a Service and a Traefik route, configured by the service's `values.yaml`.
+
+- **Routes:** a service answers under its full public path (`/api/auth/…`); Traefik doesn't strip the prefix.
+- **Health:** `GET <prefix>/health`, used by Kubernetes' readiness and liveness checks. Health checks are neither traced nor logged.
+- **Live reload:** Tilt compiles on your Mac and syncs the result into the running container, which restarts the program. An edit shows up in a few seconds, without rebuilding the image.
+- **Tests and lint:** `just test`, `just lint`.
 
 ## The flow: one issue → one branch → one PR
 
