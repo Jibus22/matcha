@@ -23,7 +23,13 @@ func run() error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	srv := &http.Server{Addr: ":8080", Handler: routes(), ReadHeaderTimeout: 5 * time.Second}
+	shutdownTelemetry, err := setupTelemetry(ctx)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = shutdownTelemetry(context.Background()) }()
+
+	srv := &http.Server{Addr: ":8080", Handler: instrument(routes()), ReadHeaderTimeout: 5 * time.Second}
 	errc := make(chan error, 1)
 	go func() { errc <- srv.ListenAndServe() }()
 	slog.Info("listening", "addr", srv.Addr)
