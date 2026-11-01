@@ -26,6 +26,10 @@ gen:
     cd auth/api && go tool oapi-codegen -config oapi-codegen.yaml ../../contracts/openapi/auth.yaml
     pnpm exec openapi-typescript contracts/openapi/auth.yaml -o contracts/ts/auth.ts
 
+# Rebuild the password blocklist from its pinned sources (auth/password/data/SOURCES.md)
+blocklist:
+    cd auth && go run ./password/gen
+
 # Run every service's tests
 test:
     cd auth && go test ./...
