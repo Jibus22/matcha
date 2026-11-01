@@ -1,0 +1,8 @@
+# Go code generated from contracts/openapi/auth.yaml by `just gen`. Don't edit auth.gen.go.
+package: api
+output: auth.gen.go
+generate:
+  models: true
+  std-http-server: true
+  strict-server: true
+  embedded-spec: true
