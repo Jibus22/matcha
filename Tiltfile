@@ -39,6 +39,17 @@ k8s_resource(
     labels=['observability'],
 )
 
+# Container logs: the OpenTelemetry Collector chart, one collector per node, plain helm like CNPG.
+local_resource(
+    'otel-collector',
+    cmd='helm upgrade --install otel-collector'
+    + ' oci://ghcr.io/open-telemetry/opentelemetry-helm-charts/opentelemetry-collector'
+    + ' --version 0.178.1 --namespace observability -f dev/otel-collector.yaml --wait',
+    deps=['dev/otel-collector.yaml'],
+    resource_deps=['otel-lgtm'],
+    labels=['observability'],
+)
+
 # Traefik sends its traces and metrics to that collector, so every request's trace starts at
 # the edge.
 k8s_yaml('dev/traefik.yaml')

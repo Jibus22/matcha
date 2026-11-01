@@ -1,0 +1,41 @@
+# Values for the OpenTelemetry Collector chart: one collector per node reads every container's
+# log file and sends the lines to otel-lgtm, so they reach Loki whatever language wrote them.
+mode: daemonset
+image:
+  repository: otel/opentelemetry-collector-k8s
+presets:
+  logsCollection:
+    enabled: true
+  kubernetesAttributes:
+    enabled: true
+config:
+  # This collector only handles logs: services send traces and metrics to otel-lgtm directly.
+  receivers:
+    jaeger: null
+    zipkin: null
+    prometheus: null
+  exporters:
+    otlphttp:
+      endpoint: http://otel-lgtm.observability:4318
+  processors:
+    transform/logs:
+      error_mode: ignore
+      log_statements:
+        # Name each line's source after its container when the line doesn't say.
+        - context: resource
+          statements:
+            - set(attributes["service.name"], attributes["k8s.container.name"]) where attributes["service.name"] == nil
+        # Our services log JSON with trace_id and span_id: lift those onto the log record, so
+        # Grafana links a line in Loki to its trace in Tempo.
+        - context: log
+          statements:
+            - merge_maps(attributes, ParseJSON(body), "upsert") where IsMatch(body, "^\\{")
+            - set(trace_id.string, attributes["trace_id"]) where attributes["trace_id"] != nil
+            - set(span_id.string, attributes["span_id"]) where attributes["span_id"] != nil
+  service:
+    pipelines:
+      logs:
+        processors: [memory_limiter, transform/logs, batch]
+        exporters: [otlphttp]
+      traces: null
+      metrics: null
