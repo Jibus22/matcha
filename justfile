@@ -18,6 +18,7 @@ fmt-check:
 # What the pre-push hook runs. Each service adds its linter here.
 lint: fmt-check
     cd auth && go vet ./...
+    helm lint --quiet charts/service -f auth/values.yaml
 
 # Run every service's tests
 test:

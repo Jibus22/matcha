@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}
+          image: {{ required "image is required" .Values.image }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.port }}
+          env:
+            - name: OTEL_SERVICE_NAME
+              value: {{ .Release.Name }}
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.otlpEndpoint }}
+            {{- range $name, $value := .Values.env }}
+            - name: {{ $name }}
+              value: {{ $value | quote }}
+            {{- end }}
+          # Ready: receives traffic from its Service. Alive: restarted if it stops answering.
+          readinessProbe:
+            httpGet:
+              path: {{ required "healthPath is required" .Values.healthPath }}
+              port: http
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.healthPath }}
+              port: http
+            periodSeconds: 10
+            failureThreshold: 3

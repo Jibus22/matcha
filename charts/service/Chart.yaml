@@ -1,0 +1,4 @@
+apiVersion: v2
+name: service
+description: One matcha service — its Deployment, Service and Traefik route.
+version: 0.1.0

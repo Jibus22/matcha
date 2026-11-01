@@ -1,0 +1,4 @@
+# auth, deployed with the shared chart in charts/service.
+image: matcha-auth
+pathPrefix: /api/auth
+healthPath: /api/auth/health

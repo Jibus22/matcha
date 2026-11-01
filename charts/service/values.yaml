@@ -1,0 +1,15 @@
+# Each service overrides these in its own values.yaml.
+
+# Image to run. Locally, Tilt replaces it with the image it just built.
+image: ""
+# Port the program listens on.
+port: 8080
+# Path the health checks call, e.g. /api/auth/health.
+healthPath: ""
+# URL prefix Traefik sends to this service, e.g. /api/auth. Empty: no route.
+pathPrefix: ""
+replicas: 1
+# Extra environment variables, name: value.
+env: {}
+# Where the service sends traces, metrics and logs over OTLP.
+otlpEndpoint: http://otel-lgtm.observability:4318
