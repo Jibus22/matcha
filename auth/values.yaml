@@ -13,4 +13,4 @@ env:
 secretEnv:
   PGPASSWORD: { secret: auth-db, key: password }
 rateLimit:
-  paths: [/api/auth/login]
+  paths: [/api/auth/login, /api/auth/password-reset]

@@ -17,9 +17,6 @@ import (
 	"github.com/Jibus22/matcha/auth/api"
 )
 
-// errNotImplemented marks operations the contract describes but the service doesn't serve yet.
-var errNotImplemented = errors.New("not implemented yet")
-
 // problem builds an RFC 9457 problem; every error the service returns has this shape.
 func problem(status int, title string, fields ...api.FieldError) api.Problem {
 	p := api.Problem{Status: status, Title: title}
@@ -37,10 +34,6 @@ func writeProblem(w http.ResponseWriter, p api.Problem) {
 
 // handlerError answers when a handler returns an error instead of a response.
 func handlerError(w http.ResponseWriter, r *http.Request, err error) {
-	if errors.Is(err, errNotImplemented) {
-		writeProblem(w, problem(http.StatusNotImplemented, "Not implemented yet"))
-		return
-	}
 	slog.ErrorContext(r.Context(), "handler failed", "error", err)
 	writeProblem(w, problem(http.StatusInternalServerError, "Something went wrong on our side"))
 }

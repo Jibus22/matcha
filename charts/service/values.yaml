@@ -15,7 +15,8 @@ env: {}
 secretEnv: {}
 # Where the service sends traces, metrics and logs over OTLP.
 otlpEndpoint: http://otel-lgtm.observability:4318
-# Paths Traefik rate-limits per client address, e.g. [/api/auth/login]. Empty: no limit.
+# Paths Traefik rate-limits per client address, sharing one budget, e.g. [/api/auth/login].
+# Empty: no limit.
 rateLimit:
   paths: []
   # Requests per period on average, and how many may arrive at once.

@@ -116,3 +116,66 @@ func (s *server) ResendVerification(ctx context.Context, req api.ResendVerificat
 	}
 	return api.ResendVerification202Response{}, nil
 }
+
+const resetTTL = 30 * time.Minute
+
+// RequestPasswordReset emails a reset link; the previous one stops working. The answer is the same
+// whether or not the account exists.
+func (s *server) RequestPasswordReset(ctx context.Context, req api.RequestPasswordResetRequestObject) (api.RequestPasswordResetResponseObject, error) {
+	var email, firstName, token string
+	err := pgx.BeginFunc(ctx, s.db, func(tx pgx.Tx) error {
+		var id string
+		err := tx.QueryRow(ctx, `SELECT id, email, first_name FROM accounts WHERE lower(email) = lower($1)`,
+			string(req.Body.Email)).Scan(&id, &email, &firstName)
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		token, err = issueToken(ctx, tx, id, purposeReset, resetTTL)
+		return err
+	})
+	if err != nil {
+		return nil, err
+	}
+	if token != "" {
+		s.sendLater(ctx, email, resetEmail(firstName, s.publicURL+"/reset-password?token="+token))
+	}
+	return api.RequestPasswordReset202Response{}, nil
+}
+
+// ConfirmPasswordReset sets the new password and ends every session of the account. The link
+// proves the email address too, so an unverified account becomes verified.
+func (s *server) ConfirmPasswordReset(ctx context.Context, req api.ConfirmPasswordResetRequestObject) (api.ConfirmPasswordResetResponseObject, error) {
+	// Checked before the token is spent: a refused password leaves the link usable.
+	var rejected *password.Rejection
+	if err := password.Check(req.Body.Password); errors.As(err, &rejected) {
+		return api.ConfirmPasswordReset400ApplicationProblemPlusJSONResponse(
+			problem(http.StatusBadRequest, "Some fields are invalid", api.FieldError{Field: "password", Message: rejected.Reason})), nil
+	}
+	hash, err := passhash.Hash(req.Body.Password)
+	if err != nil {
+		return nil, err
+	}
+	err = pgx.BeginFunc(ctx, s.db, func(tx pgx.Tx) error {
+		id, err := consumeToken(ctx, tx, req.Body.Token, purposeReset)
+		if err != nil {
+			return err
+		}
+		if _, err := tx.Exec(ctx, `UPDATE accounts SET password_hash = $2, verified_at = coalesce(verified_at, now()) WHERE id = $1`,
+			id, hash); err != nil {
+			return err
+		}
+		_, err = tx.Exec(ctx, `UPDATE sessions SET revoked_at = now() WHERE account_id = $1 AND revoked_at IS NULL`, id)
+		return err
+	})
+	if errors.Is(err, errBadToken) {
+		return api.ConfirmPasswordReset400ApplicationProblemPlusJSONResponse(
+			problem(http.StatusBadRequest, "This link is invalid, has expired or was already used")), nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return api.ConfirmPasswordReset204Response{}, nil
+}

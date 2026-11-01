@@ -76,13 +76,3 @@ func limitBody(next http.Handler) http.Handler {
 func (s *server) GetHealth(context.Context, api.GetHealthRequestObject) (api.GetHealthResponseObject, error) {
 	return api.GetHealth200JSONResponse{Status: "ok"}, nil
 }
-
-// Not served yet: password reset (#13).
-
-func (s *server) RequestPasswordReset(context.Context, api.RequestPasswordResetRequestObject) (api.RequestPasswordResetResponseObject, error) {
-	return nil, errNotImplemented
-}
-
-func (s *server) ConfirmPasswordReset(context.Context, api.ConfirmPasswordResetRequestObject) (api.ConfirmPasswordResetResponseObject, error) {
-	return nil, errNotImplemented
-}

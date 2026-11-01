@@ -51,3 +51,12 @@ func verificationEmail(firstName, link string) message {
 			firstName, link),
 	}
 }
+
+func resetEmail(firstName, link string) message {
+	return message{
+		Subject: "Reset your matcha password",
+		Body: fmt.Sprintf("Hi %s,\n\nOpen this link to choose a new password:\n%s\n\n"+
+			"It works once and expires in 30 minutes. If you didn't ask for it, ignore this email: your password stays as it is.\n",
+			firstName, link),
+	}
+}
