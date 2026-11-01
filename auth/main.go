@@ -29,6 +29,12 @@ func run() error {
 	}
 	defer func() { _ = shutdownTelemetry(context.Background()) }()
 
+	db, err := openDB(ctx)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
 	srv := &http.Server{Addr: ":8080", Handler: instrument(routes()), ReadHeaderTimeout: 5 * time.Second}
 	errc := make(chan error, 1)
 	go func() { errc <- srv.ListenAndServe() }()
