@@ -1,0 +1,80 @@
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  --error: light-dark(#b3261e, #f2b8b5);
+  --met: light-dark(#1b6e3a, #7dd99a);
+  --accent: light-dark(#2e7d4f, #8fd6a8);
+}
+body {
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+header nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.brand {
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+form,
+.field {
+  display: grid;
+  gap: 0.25rem;
+}
+form {
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+input,
+button {
+  font: inherit;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+form button {
+  border: 0;
+  background: var(--accent);
+  color: light-dark(white, #0b1f14);
+  cursor: pointer;
+}
+form button:disabled {
+  opacity: 0.6;
+}
+input[aria-invalid] {
+  outline: 2px solid var(--error);
+}
+.rules {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+  opacity: 0.8;
+}
+.rules .met {
+  color: var(--met);
+  list-style: "✓ ";
+}
+.rules .server {
+  list-style: "· ";
+}
+.error {
+  margin: 0;
+  color: var(--error);
+}
+main > .error {
+  margin-bottom: 1rem;
+}
+footer {
+  margin-top: 3rem;
+  font-size: 0.875rem;
+}
