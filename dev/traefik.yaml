@@ -1,0 +1,21 @@
+# k3s installs Traefik from its own chart. A HelmChartConfig adds values to that chart, and
+# k3s's helm controller upgrades Traefik with them.
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    tracing:
+      otlp:
+        enabled: true
+        http:
+          enabled: true
+          endpoint: http://otel-lgtm.observability:4318/v1/traces
+    metrics:
+      otlp:
+        enabled: true
+        http:
+          enabled: true
+          endpoint: http://otel-lgtm.observability:4318/v1/metrics
