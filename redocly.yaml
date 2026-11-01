@@ -1,0 +1,9 @@
+# OpenAPI lint for contracts/openapi (just lint).
+extends:
+  - recommended
+rules:
+  info-license: off
+  # The local cluster is the only server so far.
+  no-server-example.com: off
+  # Health, keys and logout have nothing to refuse.
+  operation-4xx-response: off

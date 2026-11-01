@@ -19,6 +19,7 @@ fmt-check:
 lint: fmt-check
     cd auth && go vet ./...
     helm lint --quiet charts/service -f auth/values.yaml
+    pnpm exec redocly lint --format=stylish contracts/openapi/*.yaml
 
 # Run every service's tests
 test:
