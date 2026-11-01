@@ -18,6 +18,9 @@ func TestMigrationsRunTwiceAndUniquenessIgnoresCase(t *testing.T) {
 	if err := migrate(ctx, db); err != nil {
 		t.Fatalf("second migration: %v", err)
 	}
+	if _, err := db.Exec(ctx, `TRUNCATE accounts CASCADE`); err != nil {
+		t.Fatal(err)
+	}
 
 	insert := `INSERT INTO accounts (email, username, first_name, last_name, password_hash)
 	           VALUES ($1, $2, 'Jean', 'Dupont', 'hash')`

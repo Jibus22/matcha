@@ -44,16 +44,13 @@ func setupTelemetry(ctx context.Context) (func(context.Context) error, error) {
 }
 
 // instrument gives each request a span and request metrics, and one log line, except for
-// Kubernetes' health checks, which would bury real traffic.
-func instrument(mux *http.ServeMux) http.Handler {
+// Kubernetes' health checks, which would bury real traffic. The span is named after the route by
+// nameSpanAfterRoute, once the router has matched one.
+func instrument(next http.Handler) http.Handler {
 	logged := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		rec := &statusRecorder{ResponseWriter: w, status: http.StatusOK}
-		mux.ServeHTTP(rec, r)
-		// The mux has now matched a pattern: name the span after it, not after the raw URL.
-		if r.Pattern != "" {
-			trace.SpanFromContext(r.Context()).SetName(r.Pattern)
-		}
+		next.ServeHTTP(rec, r)
 		if !isHealthCheck(r) {
 			slog.InfoContext(r.Context(), "request", "method", r.Method, "path", r.URL.Path,
 				"status", rec.status, "duration_ms", time.Since(start).Milliseconds())
