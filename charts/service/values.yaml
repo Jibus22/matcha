@@ -11,5 +11,7 @@ pathPrefix: ""
 replicas: 1
 # Extra environment variables, name: value.
 env: {}
+# Environment variables read from Secrets, name: {secret: <Secret name>, key: <key in it>}.
+secretEnv: {}
 # Where the service sends traces, metrics and logs over OTLP.
 otlpEndpoint: http://otel-lgtm.observability:4318
