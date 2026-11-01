@@ -8,13 +8,20 @@ files := "git ls-files -z --cached --others --exclude-standard"
 # Format every file
 fmt:
     {{ files }} | xargs -0 pnpm exec prettier --write --ignore-unknown --no-error-on-unmatched-pattern
+    gofmt -w auth
 
 # Fail if a file isn't formatted
 fmt-check:
     {{ files }} | xargs -0 pnpm exec prettier --check --ignore-unknown --no-error-on-unmatched-pattern
+    @test -z "$(gofmt -l auth)" || { gofmt -l auth; echo "gofmt: the files above need formatting (just fmt)"; exit 1; }
 
 # What the pre-push hook runs. Each service adds its linter here.
 lint: fmt-check
+    cd auth && go vet ./...
+
+# Run every service's tests
+test:
+    cd auth && go test ./...
 
 cluster := "matcha"
 
