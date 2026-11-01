@@ -1,0 +1,4 @@
+image: matcha-web
+port: 5173
+pathPrefix: /
+healthPath: /

@@ -9,7 +9,7 @@
 
 ```bash
 direnv allow   # loads the dev shell: every toolchain, pinned by flake.lock
-pnpm install   # installs the formatters and activates the git hooks
+pnpm install   # installs the formatters and the web app's packages, and activates the git hooks
 just           # lists the recipes
 ```
 
@@ -23,7 +23,7 @@ just psql   # psql into the local Postgres, as the superuser
 just down   # deletes the cluster and everything in it
 ```
 
-- Traefik answers on http://localhost:8080.
+- Traefik answers on http://localhost:8080: the web app at `/`, the API docs at `/docs`, the services under `/api/…`.
 - `.envrc` points `KUBECONFIG` at `.direnv/kubeconfig`: inside the repo, `kubectl`, `helm` and `tilt` only see the local cluster, and `~/.kube/config` is never touched. `just up` refuses to run without it.
 
 ## Observability
@@ -41,6 +41,8 @@ Each service lives in its own folder (`auth/`…) and is deployed with the share
 - **Health:** `GET <prefix>/health`, used by Kubernetes' readiness and liveness checks. Health checks are neither traced nor logged.
 - **Live reload:** Tilt compiles on your Mac and syncs the result into the running container, which restarts the program. An edit shows up in a few seconds, without rebuilding the image.
 - **Tests and lint:** `just test`, `just lint`.
+
+The web app (`web/`, SolidJS) goes through the same chart. Vite's dev server runs in the cluster: Tilt syncs each edit into the container and Vite updates the page in place, without a reload. It calls the API with a client typed from the contracts (`just gen`), on the same origin, so there's no CORS.
 
 ## The flow: one issue → one branch → one PR
 

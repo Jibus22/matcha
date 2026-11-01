@@ -96,3 +96,36 @@ k8s_resource(
     resource_deps=['auth-compile', 'postgres'],  # postgres also creates the matcha namespace
     labels=['auth'],
 )
+
+# web (SolidJS). Vite's dev server runs in the container: Tilt syncs the sources and Vite updates
+# the page in place. Only a dependency change rebuilds the image.
+docker_build(
+    'matcha-web',
+    '.',
+    dockerfile_contents='''FROM node:24-alpine
+RUN corepack enable
+WORKDIR /app
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY web/package.json web/
+RUN pnpm install --frozen-lockfile --filter web
+COPY web web
+COPY contracts contracts
+WORKDIR /app/web
+ENTRYPOINT ["pnpm", "exec", "vite"]
+''',
+    only=['package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'web', 'contracts'],
+    ignore=['web/node_modules'],
+    live_update=[
+        fall_back_on(['web/package.json', 'pnpm-lock.yaml']),
+        sync('web', '/app/web'),
+        sync('contracts', '/app/contracts'),
+    ],
+)
+k8s_yaml(helm('charts/service', name='web', namespace='matcha', values=['web/values.yaml']))
+k8s_resource(
+    'web',
+    objects=['web:ingressroute'],
+    resource_deps=['postgres'],  # postgres creates the matcha namespace
+    links=[link('http://localhost:8080/', 'app'), link('http://localhost:8080/docs', 'API docs')],
+    labels=['web'],
+)
