@@ -18,6 +18,7 @@ type server struct {
 	db        *pgxpool.Pool
 	mail      mailer
 	publicURL string // where email links point, e.g. http://localhost:8080
+	key       signingKey
 }
 
 var _ api.StrictServerInterface = (*server)(nil)
@@ -76,23 +77,7 @@ func (s *server) GetHealth(context.Context, api.GetHealthRequestObject) (api.Get
 	return api.GetHealth200JSONResponse{Status: "ok"}, nil
 }
 
-// Not served yet: sessions and keys (#12), password reset (#13).
-
-func (s *server) Login(context.Context, api.LoginRequestObject) (api.LoginResponseObject, error) {
-	return nil, errNotImplemented
-}
-
-func (s *server) Refresh(context.Context, api.RefreshRequestObject) (api.RefreshResponseObject, error) {
-	return nil, errNotImplemented
-}
-
-func (s *server) Logout(context.Context, api.LogoutRequestObject) (api.LogoutResponseObject, error) {
-	return nil, errNotImplemented
-}
-
-func (s *server) GetJWKS(context.Context, api.GetJWKSRequestObject) (api.GetJWKSResponseObject, error) {
-	return nil, errNotImplemented
-}
+// Not served yet: password reset (#13).
 
 func (s *server) RequestPasswordReset(context.Context, api.RequestPasswordResetRequestObject) (api.RequestPasswordResetResponseObject, error) {
 	return nil, errNotImplemented

@@ -9,7 +9,7 @@ import (
 )
 
 // call sends one request through the full stack the service runs: validation, handlers, errors.
-func call(t *testing.T, s *server, method, path, body string) *httptest.ResponseRecorder {
+func call(t *testing.T, s *server, method, path, body string, cookies ...*http.Cookie) *httptest.ResponseRecorder {
 	t.Helper()
 	handler, err := s.routes()
 	if err != nil {
@@ -18,6 +18,9 @@ func call(t *testing.T, s *server, method, path, body string) *httptest.Response
 	req := httptest.NewRequest(method, path, strings.NewReader(body))
 	if body != "" {
 		req.Header.Set("Content-Type", "application/json")
+	}
+	for _, c := range cookies {
+		req.AddCookie(c)
 	}
 	rec := httptest.NewRecorder()
 	handler.ServeHTTP(rec, req)

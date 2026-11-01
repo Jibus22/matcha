@@ -92,7 +92,7 @@ docker_build_with_restart(
 k8s_yaml(helm('charts/service', name='auth', namespace='matcha', values=['auth/values.yaml']))
 k8s_resource(
     'auth',
-    objects=['auth:ingressroute'],
+    objects=['auth:ingressroute', 'auth-ratelimit:middleware'],
     resource_deps=['auth-compile', 'postgres'],  # postgres also creates the matcha namespace
     labels=['auth'],
 )

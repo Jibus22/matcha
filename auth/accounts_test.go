@@ -32,8 +32,12 @@ func newTestServer(t *testing.T) (*server, fakeMailer) {
 	if _, err := db.Exec(context.Background(), `TRUNCATE accounts CASCADE`); err != nil {
 		t.Fatal(err)
 	}
+	key, err := loadSigningKey(context.Background(), db)
+	if err != nil {
+		t.Fatal(err)
+	}
 	mail := make(fakeMailer, 10)
-	return &server{db: db, mail: mail, publicURL: "http://matcha.test"}, mail
+	return &server{db: db, mail: mail, publicURL: "http://matcha.test", key: key}, mail
 }
 
 var linkToken = regexp.MustCompile(`/verify\?token=([A-Za-z0-9_-]+)`)

@@ -12,3 +12,5 @@ env:
   MAIL_FROM: matcha <no-reply@matcha.local>
 secretEnv:
   PGPASSWORD: { secret: auth-db, key: password }
+rateLimit:
+  paths: [/api/auth/login]

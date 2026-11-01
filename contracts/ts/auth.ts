@@ -238,17 +238,21 @@ export interface components {
             expiresIn: number;
         };
         JWKS: {
-            keys: {
-                /** @enum {string} */
-                kty: "RSA";
-                kid: string;
-                /** @enum {string} */
-                use: "sig";
-                /** @enum {string} */
-                alg: "RS256";
-                n: string;
-                e: string;
-            }[];
+            keys: components["schemas"]["JWK"][];
+        };
+        /** @description One RSA public key, as in RFC 7517 */
+        JWK: {
+            /** @enum {string} */
+            kty: "RSA";
+            kid: string;
+            /** @enum {string} */
+            use: "sig";
+            /** @enum {string} */
+            alg: "RS256";
+            /** @description Modulus, base64url */
+            n: string;
+            /** @description Exponent, base64url */
+            e: string;
         };
         /** @description RFC 9457 problem details */
         Problem: {
