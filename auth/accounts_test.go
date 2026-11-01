@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"net/http"
+	"net/http/httptest"
 	"regexp"
 	"testing"
 	"time"
@@ -40,7 +41,7 @@ func newTestServer(t *testing.T) (*server, fakeMailer) {
 	return &server{db: db, mail: mail, publicURL: "http://matcha.test", key: key}, mail
 }
 
-var linkToken = regexp.MustCompile(`/verify\?token=([A-Za-z0-9_-]+)`)
+var linkToken = regexp.MustCompile(`\?token=([A-Za-z0-9_-]+)`)
 
 // nextLink waits for the next email and returns the token in its link.
 func nextLink(t *testing.T, mail fakeMailer, to string) string {
@@ -148,5 +149,58 @@ func TestExpiredLinkIsRefused(t *testing.T) {
 	}
 	if code := call(t, s, http.MethodPost, "/api/auth/verification", `{"token":"`+token+`"}`).Code; code != http.StatusBadRequest {
 		t.Errorf("expired link = %d, want 400", code)
+	}
+}
+
+func TestPasswordReset(t *testing.T) {
+	s, mail := newTestServer(t)
+	verifiedJean(t, s, mail)
+	session := refreshCookieOf(t, call(t, s, http.MethodPost, "/api/auth/login", `{"username":"Jibus22","password":"correct-horse-battery-staple"}`))
+
+	for _, email := range []string{"JEAN@example.com", "nobody@example.com"} {
+		if code := call(t, s, http.MethodPost, "/api/auth/password-reset", `{"email":"`+email+`"}`).Code; code != http.StatusAccepted {
+			t.Errorf("reset for %s = %d, want 202 either way", email, code)
+		}
+	}
+	token := nextLink(t, mail, "jean@example.com") // the address as registered
+	select {
+	case m := <-mail:
+		t.Errorf("an email went to %s, an address with no account", m.to)
+	case <-time.After(200 * time.Millisecond):
+	}
+
+	confirm := func(password string) *httptest.ResponseRecorder {
+		return call(t, s, http.MethodPost, "/api/auth/password-reset/confirm", `{"token":"`+token+`","password":"`+password+`"}`)
+	}
+	if rec := confirm("Bonjour2024!"); rec.Code != http.StatusBadRequest || problemFields(t, rec)["password"] == "" {
+		t.Errorf("dictionary password = %d %s, want 400 on password", rec.Code, rec.Body.String())
+	}
+	if code := confirm("a-brand-new-long-secret").Code; code != http.StatusNoContent {
+		t.Fatalf("reset after a refused password = %d, want 204", code)
+	}
+	if code := confirm("another-brand-new-secret").Code; code != http.StatusBadRequest {
+		t.Errorf("second use of the link = %d, want 400", code)
+	}
+
+	if code := call(t, s, http.MethodPost, "/api/auth/refresh", "", session).Code; code != http.StatusUnauthorized {
+		t.Errorf("refresh with a session from before the reset = %d, want 401", code)
+	}
+	if code := call(t, s, http.MethodPost, "/api/auth/login", `{"username":"Jibus22","password":"correct-horse-battery-staple"}`).Code; code != http.StatusUnauthorized {
+		t.Errorf("login with the old password = %d, want 401", code)
+	}
+	if code := call(t, s, http.MethodPost, "/api/auth/login", `{"username":"Jibus22","password":"a-brand-new-long-secret"}`).Code; code != http.StatusOK {
+		t.Errorf("login with the new password = %d, want 200", code)
+	}
+}
+
+func TestPasswordResetVerifiesTheAccount(t *testing.T) {
+	s, mail := newTestServer(t)
+	call(t, s, http.MethodPost, "/api/auth/signup", jean)
+	<-mail
+	call(t, s, http.MethodPost, "/api/auth/password-reset", `{"email":"jean@example.com"}`)
+	token := nextLink(t, mail, "jean@example.com")
+	call(t, s, http.MethodPost, "/api/auth/password-reset/confirm", `{"token":"`+token+`","password":"a-brand-new-long-secret"}`)
+	if code := call(t, s, http.MethodPost, "/api/auth/login", `{"username":"Jibus22","password":"a-brand-new-long-secret"}`).Code; code != http.StatusOK {
+		t.Errorf("login after resetting an unverified account = %d, want 200", code)
 	}
 }
