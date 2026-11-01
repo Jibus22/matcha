@@ -15,7 +15,9 @@ import (
 
 // server implements the API described in contracts/openapi/auth.yaml (api.StrictServerInterface).
 type server struct {
-	db *pgxpool.Pool
+	db        *pgxpool.Pool
+	mail      mailer
+	publicURL string // where email links point, e.g. http://localhost:8080
 }
 
 var _ api.StrictServerInterface = (*server)(nil)
@@ -74,19 +76,7 @@ func (s *server) GetHealth(context.Context, api.GetHealthRequestObject) (api.Get
 	return api.GetHealth200JSONResponse{Status: "ok"}, nil
 }
 
-// Not served yet: signup and verification (#11), sessions and keys (#12), password reset (#13).
-
-func (s *server) Signup(context.Context, api.SignupRequestObject) (api.SignupResponseObject, error) {
-	return nil, errNotImplemented
-}
-
-func (s *server) VerifyEmail(context.Context, api.VerifyEmailRequestObject) (api.VerifyEmailResponseObject, error) {
-	return nil, errNotImplemented
-}
-
-func (s *server) ResendVerification(context.Context, api.ResendVerificationRequestObject) (api.ResendVerificationResponseObject, error) {
-	return nil, errNotImplemented
-}
+// Not served yet: sessions and keys (#12), password reset (#13).
 
 func (s *server) Login(context.Context, api.LoginRequestObject) (api.LoginResponseObject, error) {
 	return nil, errNotImplemented

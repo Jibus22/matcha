@@ -37,7 +37,12 @@ func run() error {
 
 	// Routes are the full public paths (/api/auth/…): Traefik doesn't strip the prefix, so logs
 	// and traces show the URL the browser used.
-	handler, err := (&server{db: db}).routes()
+	s := &server{
+		db:        db,
+		mail:      smtpMailer{addr: os.Getenv("SMTP_ADDR"), from: os.Getenv("MAIL_FROM")},
+		publicURL: os.Getenv("PUBLIC_URL"),
+	}
+	handler, err := s.routes()
 	if err != nil {
 		return err
 	}
