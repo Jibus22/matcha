@@ -7,6 +7,18 @@ metadata:
 spec:
   entryPoints: [web]
   routes:
+    {{- with .Values.rateLimit.paths }}
+    # Explicit priority: Traefik otherwise ranks routes by rule length, and the prefix rule below
+    # can be as long.
+    - match: {{ range $i, $p := . }}{{ if $i }} || {{ end }}Path(`{{ $p }}`){{ end }}
+      kind: Rule
+      priority: 1000
+      middlewares:
+        - name: {{ $.Release.Name }}-ratelimit
+      services:
+        - name: {{ $.Release.Name }}
+          port: 80
+    {{- end }}
     - match: PathPrefix(`{{ .Values.pathPrefix }}`)
       kind: Rule
       services:
