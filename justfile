@@ -19,6 +19,8 @@ fmt-check:
 lint: fmt-check
     cd auth && go vet ./...
     helm lint --quiet charts/service -f auth/values.yaml
+    helm lint --quiet charts/service -f web/values.yaml
+    pnpm --filter web check
     pnpm exec redocly lint --format=stylish contracts/openapi/*.yaml
 
 # Generate code from the API contracts: Go server types and TypeScript client types
