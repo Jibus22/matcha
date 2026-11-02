@@ -66,7 +66,7 @@ func TestErrorsAreProblems(t *testing.T) {
 }
 
 func TestInvalidFieldsAreListed(t *testing.T) {
-	body := `{"email":"not-an-email","username":"x!","firstName":"","lastName":"Dupont","password":"short"}`
+	body := `{"email":"not-an-email","username":"x!","firstName":"","lastName":"Dupont","password":"short","age":3}`
 	rec := call(t, &server{}, http.MethodPost, "/api/auth/signup", body)
 	if rec.Code != http.StatusBadRequest {
 		t.Fatalf("status = %d, want 400: %s", rec.Code, rec.Body.String())
@@ -79,5 +79,8 @@ func TestInvalidFieldsAreListed(t *testing.T) {
 	}
 	if fields["password"] != "Use at least 12 characters." {
 		t.Errorf("password message = %q", fields["password"])
+	}
+	if fields["age"] != "Unknown field." {
+		t.Errorf("a field the contract doesn't define: %v", fields)
 	}
 }

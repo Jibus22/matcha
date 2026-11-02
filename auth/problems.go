@@ -72,10 +72,11 @@ func fieldErrors(err error) []api.FieldError {
 	return []api.FieldError{{Field: fieldName(se), Message: ruleMessage(se)}}
 }
 
-var missingProperty = regexp.MustCompile(`property "([^"]+)" is missing`)
+// A missing or unknown property is reported on its parent object; the reason names it.
+var namedProperty = regexp.MustCompile(`property "([^"]+)" is (?:missing|unsupported)`)
 
 func fieldName(se *openapi3.SchemaError) string {
-	if m := missingProperty.FindStringSubmatch(se.Reason); m != nil {
+	if m := namedProperty.FindStringSubmatch(se.Reason); m != nil {
 		return m[1]
 	}
 	return strings.Join(se.JSONPointer(), ".")
@@ -99,7 +100,7 @@ func ruleMessage(se *openapi3.SchemaError) string {
 		if s.Description != "" {
 			return strings.ReplaceAll(s.Description, "`", "")
 		}
-	case "additionalProperties":
+	case "properties": // a property the schema doesn't define
 		return "Unknown field."
 	}
 	return se.Reason
