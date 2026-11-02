@@ -80,6 +80,9 @@ func TestInvalidFieldsAreListed(t *testing.T) {
 	if fields["password"] != "Use at least 12 characters." {
 		t.Errorf("password message = %q", fields["password"])
 	}
+	if fields["firstName"] != "Required." {
+		t.Errorf("an empty required field: %v", fields)
+	}
 	if fields["age"] != "Unknown field." {
 		t.Errorf("a field the contract doesn't define: %v", fields)
 	}

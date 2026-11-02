@@ -89,6 +89,9 @@ func ruleMessage(se *openapi3.SchemaError) string {
 	case "required":
 		return "Required."
 	case "minLength":
+		if s.MinLength == 1 { // an empty string, as good as missing
+			return "Required."
+		}
 		return fmt.Sprintf("Use at least %d characters.", s.MinLength)
 	case "maxLength":
 		return fmt.Sprintf("Use at most %d characters.", *s.MaxLength)
